@@ -122,11 +122,21 @@ export const LoginPage: React.FC<LoginPageProps> = ({ language, setLanguage }) =
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!signupData.role) {
+      toast({
+        title: t.signupError,
+        description: "Please select a role",
+        variant: 'destructive'
+      });
+      return;
+    }
+    
     setLoading(true);
     
     const { error } = await signUp(signupData.email, signupData.password, {
       full_name: signupData.full_name,
-      role: signupData.role,
+      role: signupData.role as 'farmer' | 'veterinarian' | 'government',
       district: signupData.district,
       phone: signupData.phone,
       farm_name: signupData.farm_name,
@@ -252,7 +262,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({ language, setLanguage }) =
                   </div>
                   <div>
                     <Label>{t.role}</Label>
-                    <Select value={signupData.role || ''} onValueChange={(value: 'farmer' | 'veterinarian' | 'government') => setSignupData({...signupData, role: value})}>
+                    <Select 
+                      value={signupData.role || ''} 
+                      onValueChange={(value: 'farmer' | 'veterinarian' | 'government') => setSignupData({...signupData, role: value})}
+                      required
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder={t.selectRole} />
                       </SelectTrigger>
