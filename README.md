@@ -1,8 +1,97 @@
-# Welcome to your Lovable project
+# Kalnadai Portal 🌾
 
-## Project info
+**Digital Livestock Antimicrobial Monitoring System**
 
-**URL**: https://lovable.dev/projects/d885c35f-cf9a-42f7-b904-b4ca79df681a
+A comprehensive web application for monitoring livestock antimicrobial usage across Tamil Nadu, connecting farmers, veterinarians, and government officials in a unified digital platform.
+
+## Features
+
+### 🔐 Authentication & Security
+- Secure user registration and login with Supabase
+- Role-based access control (Farmer, Veterinarian, Government Official)
+- Row-Level Security (RLS) policies for data protection
+- Profile management with role-specific fields
+
+### 🌍 Multi-Language Support
+- English and Tamil interface
+- Seamless language switching
+- Culturally appropriate design
+
+### 👥 Role-Based Dashboards
+
+#### Farmers
+- Livestock medication tracking
+- Treatment history management
+- Veterinary prescription uploads
+- Withdrawal period monitoring
+
+#### Veterinarians
+- Patient management
+- Prescription management
+- Drug usage monitoring
+- Professional license tracking
+
+#### Government Officials
+- Compliance monitoring
+- System-wide analytics
+- Report generation
+- Multi-district oversight
+
+### 🎨 Design System
+- Agricultural-themed color palette
+- Responsive design for all devices
+- Beautiful gradients and shadows
+- Consistent component library
+
+## Technology Stack
+
+- **Frontend**: React 18 + TypeScript
+- **Styling**: Tailwind CSS with custom design system
+- **UI Components**: shadcn/ui
+- **Backend**: Supabase (Database, Auth, RLS)
+- **Routing**: React Router
+- **State Management**: React Query + Context API
+- **Icons**: Lucide React
+
+## Database Schema
+
+### Core Tables
+- `user_profiles` - User information and roles
+- `FARMER DASHBOARD` - Livestock medication records
+- `Veterinarian Dashboard` - Veterinary prescriptions
+- `Compliance_Reports` - Government compliance monitoring
+
+### Security Features
+- Row Level Security (RLS) enabled on all tables
+- User isolation based on roles and ownership
+- Government officials have read access across districts
+
+## Getting Started
+
+1. **Authentication Setup**
+   - Users can register with their role (farmer/veterinarian/government)
+   - Profile automatically created on signup
+   - Role-appropriate dashboard displayed
+
+2. **For Farmers**
+   - Log livestock medication usage
+   - Upload prescription photos
+   - Track withdrawal periods
+   - Monitor treatment history
+
+3. **For Veterinarians**
+   - Manage patient records
+   - Issue digital prescriptions
+   - Track drug usage patterns
+   - Maintain professional documentation
+
+4. **For Government Officials**
+   - Monitor compliance across districts
+   - Generate reports
+   - Track antimicrobial usage trends
+   - Oversee system activities
+
+---
 
 ## How can I edit this code?
 
