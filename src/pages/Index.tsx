@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/components/AuthProvider";
 import { LoginPage } from "@/components/LoginPage";
 import { KalnadaiFarmerDashboard } from "@/components/KalnadaiFarmerDashboard";
@@ -10,7 +10,12 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 
 const Index = () => {
   const [language, setLanguage] = useState<'english' | 'tamil'>('tamil');
+  const [roleOverride, setRoleOverride] = useState<'farmer' | 'veterinarian' | 'government' | null>(null);
   const { user, profile, loading, signOut } = useAuth();
+
+  useEffect(() => {
+    if (profile?.role === 'farmer') setLanguage('tamil');
+  }, [profile?.role]);
 
   if (loading) {
     return <div className="min-h-screen bg-background flex items-center justify-center">
@@ -23,7 +28,8 @@ const Index = () => {
   }
 
   const renderDashboard = () => {
-    switch (profile.role) {
+    const role = roleOverride ?? profile.role;
+    switch (role) {
       case 'farmer':
         return <KalnadaiFarmerDashboard language={language} />;
       case 'veterinarian':
@@ -75,6 +81,21 @@ const Index = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
+                  <DropdownMenuItem disabled>
+                    Settings (Coming soon)
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setRoleOverride(null)}>
+                    Use Profile Role: {profile.role}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setRoleOverride('farmer')}>
+                    Switch to Farmer
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setRoleOverride('veterinarian')}>
+                    Switch to Veterinarian
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setRoleOverride('government')}>
+                    Switch to Government
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={signOut}>
                     <LogOut className="mr-2 h-4 w-4" />
                     Logout

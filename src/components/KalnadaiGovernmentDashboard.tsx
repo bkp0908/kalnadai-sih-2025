@@ -186,6 +186,49 @@ export const KalnadaiGovernmentDashboard: React.FC<Props> = ({ language }) => {
     color: COLORS[index % COLORS.length]
   }));
 
+  // Export compliance reports to CSV
+  const exportComplianceToCSV = () => {
+    const rows = (selectedDistrict === 'all' ? complianceReports : complianceReports.filter(r => r.District === selectedDistrict)).map(r => ({
+      ReportID: r['Report ID'],
+      District: r.District,
+      OfficerName: r['Officer Name'],
+      DrugReported: r['Drug Reported'],
+      LivestockType: r['Livestock Type'],
+      QuantityUsed: r['Quantity Used'],
+      ComplianceStatus: r['Compliance Status'],
+      Remarks: r.Remarks,
+      Date: r.Date,
+    }));
+    const headers = Object.keys(rows[0] || { ReportID: '', District: '', OfficerName: '', DrugReported: '', LivestockType: '', QuantityUsed: '', ComplianceStatus: '', Remarks: '', Date: '' });
+    const csv = [headers.join(','), ...rows.map(r => headers.map(h => `"${String((r as any)[h] ?? '').replace(/"/g, '""')}"`).join(','))].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'compliance_reports.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // Optional: Seed demo data (for preview/demo only)
+  const seedDemoData = async () => {
+    const samples = [
+      { FarmerName: 'முத்துசாமி (Muthusamy)', FarmName: 'ஆறு பசு பண்ணை', State: 'Tamil Nadu', District: 'Erode', AnimalID: 'TN-ERD-001', AnimalType: 'Cow', Medicine: 'Oxytetracycline', Dosage: '10 ml', Frequency: 'Daily', Duration: '5 days', Reason: 'Fever', Date: '01-09-2025', VetApproved: 'No', WithdrawalStatus: 'Pending', BlockchainID: `BC-${Date.now()-1}` },
+      { FarmerName: 'ராமு (Ramu)', FarmName: 'கங்கை பால் பண்ணை', State: 'Tamil Nadu', District: 'Namakkal', AnimalID: 'TN-NMK-002', AnimalType: 'Buffalo', Medicine: 'Enrofloxacin', Dosage: '8 ml', Frequency: 'Twice Daily', Duration: '3 days', Reason: 'Infection', Date: '02-09-2025', VetApproved: 'Yes', WithdrawalStatus: 'Cleared', BlockchainID: `BC-${Date.now()-2}` },
+      { FarmerName: 'குமார் (Kumar)', FarmName: 'வெள்ளை மாடு பண்ணை', State: 'Tamil Nadu', District: 'Erode', AnimalID: 'TN-ERD-003', AnimalType: 'Cow', Medicine: 'Amoxicillin', Dosage: '12 ml', Frequency: 'Daily', Duration: '7 days', Reason: 'Mastitis', Date: '03-09-2025', VetApproved: 'Yes', WithdrawalStatus: 'In Withdrawal', BlockchainID: `BC-${Date.now()-3}` },
+      { FarmerName: 'சிவா (Siva)', FarmName: 'சிவன் பண்ணை', State: 'Tamil Nadu', District: 'Salem', AnimalID: 'TN-SLM-004', AnimalType: 'Goat', Medicine: 'Tylosin', Dosage: '5 ml', Frequency: 'Daily', Duration: '3 days', Reason: 'Cough', Date: '04-09-2025', VetApproved: 'Rejected', WithdrawalStatus: 'Non-Compliant', BlockchainID: `BC-${Date.now()-4}` },
+      { FarmerName: 'அருண் (Arun)', FarmName: 'ஆரோக்ய பண்ணை', State: 'Tamil Nadu', District: 'Coimbatore', AnimalID: 'TN-CBE-005', AnimalType: 'Cow', Medicine: 'Streptomycin', Dosage: '15 ml', Frequency: 'Weekly', Duration: '2 weeks', Reason: 'Infection', Date: '05-09-2025', VetApproved: 'Yes', WithdrawalStatus: 'Compliant', BlockchainID: `BC-${Date.now()-5}` },
+    ];
+    await supabase.from('FARMER DASHBOARD').insert(samples.map((s, idx) => ({ ...s, EntryID: Date.now()+idx })));
+    await supabase.from('Compliance_Reports').insert([
+      { 'Report ID': `CR-${Date.now()}`, District: 'Erode', 'Officer Name': 'R. Kumar', 'Drug Reported': 'Oxytetracycline', 'Livestock Type': 'Cow', 'Quantity Used': 'High', 'Compliance Status': '⚠ Monitor', Remarks: 'Increased usage observed', Date: '05-09-2025' },
+      { 'Report ID': `CR-${Date.now()-1}`, District: 'Namakkal', 'Officer Name': 'S. Priya', 'Drug Reported': 'Enrofloxacin', 'Livestock Type': 'Buffalo', 'Quantity Used': 'Normal', 'Compliance Status': '✅ Compliant', Remarks: 'Within limits', Date: '04-09-2025' },
+    ]);
+    fetchComplianceReports();
+    fetchFarmerEntries();
+  };
+
   const getStatusBadge = (status: string) => {
     if (status.includes('Compliant') || status === '✅ Compliant') {
       return <Badge variant="secondary">{t.compliant}</Badge>;
@@ -352,10 +395,15 @@ export const KalnadaiGovernmentDashboard: React.FC<Props> = ({ language }) => {
                     </SelectContent>
                   </Select>
                 </div>
-                <Button variant="outline" className="gap-2">
-                  <Download className="h-4 w-4" />
-                  {t.exportData}
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Button variant="outline" className="gap-2" onClick={exportComplianceToCSV}>
+                    <Download className="h-4 w-4" />
+                    {t.exportData}
+                  </Button>
+                  <Button variant="ghost" className="gap-2" onClick={seedDemoData}>
+                    Seed Demo Data
+                  </Button>
+                </div>
               </div>
             </CardHeader>
             <CardContent>
