@@ -7,7 +7,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Camera, Upload, AlertTriangle, CheckCircle, Clock } from 'lucide-react';
+import { AlertTriangle, CheckCircle, Clock, Eye } from 'lucide-react';
+import { FileUpload } from '@/components/FileUpload';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/components/AuthProvider';
 import { supabase } from '@/integrations/supabase/client';
@@ -26,6 +27,11 @@ interface FarmerEntry {
   Date: string;
   VetApproved: string;
   WithdrawalStatus: string;
+  State?: string;
+  District?: string;
+  BlockchainID?: string;
+  PhotoURL?: string;
+  PrescriptionFileURL?: string;
 }
 
 const translations = {
@@ -89,8 +95,12 @@ export const KalnadaiFarmerDashboard: React.FC<Props> = ({ language }) => {
     dosage: '',
     frequency: '',
     duration: '',
-    reason: ''
+    reason: '',
+    administrationMethod: ''
   });
+  const [photoUrl, setPhotoUrl] = useState<string>('');
+  const [prescriptionUrl, setPrescriptionUrl] = useState<string>('');
+  const [expandedEntry, setExpandedEntry] = useState<number | null>(null);
   const [entries, setEntries] = useState<FarmerEntry[]>([]);
   const [loading, setLoading] = useState(false);
   
@@ -140,8 +150,8 @@ export const KalnadaiFarmerDashboard: React.FC<Props> = ({ language }) => {
       VetApproved: 'No',
       WithdrawalStatus: 'Pending',
       BlockchainID: blockchainId,
-      PhotoURL: '',
-      PrescriptionFileURL: ''
+      PhotoURL: photoUrl,
+      PrescriptionFileURL: prescriptionUrl
     };
     
     const { error } = await supabase
@@ -171,8 +181,11 @@ export const KalnadaiFarmerDashboard: React.FC<Props> = ({ language }) => {
         dosage: '',
         frequency: '',
         duration: '',
-        reason: ''
+        reason: '',
+        administrationMethod: ''
       });
+      setPhotoUrl('');
+      setPrescriptionUrl('');
       
       fetchEntries();
     }
@@ -301,6 +314,23 @@ export const KalnadaiFarmerDashboard: React.FC<Props> = ({ language }) => {
                       required
                     />
                   </div>
+
+                  <div>
+                    <Label htmlFor="administrationMethod">Administration Method</Label>
+                    <Select value={formData.administrationMethod} onValueChange={(value) => setFormData({...formData, administrationMethod: value})}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select method" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Oral">Oral / வாய் வழியாக</SelectItem>
+                        <SelectItem value="Injection">Injection / ஊசி</SelectItem>
+                        <SelectItem value="Topical">Topical / மேல்பூச்சு</SelectItem>
+                        <SelectItem value="Pills">Pills / மாத்திரைகள்</SelectItem>
+                        <SelectItem value="Intravenous">Intravenous / நரம்பு வழியாக</SelectItem>
+                        <SelectItem value="Intramuscular">Intramuscular / தசை வழியாக</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
                 
                 <div>
@@ -314,15 +344,23 @@ export const KalnadaiFarmerDashboard: React.FC<Props> = ({ language }) => {
                   />
                 </div>
                 
-                <div className="flex gap-4">
-                  <Button type="button" variant="outline" className="gap-2">
-                    <Camera className="h-4 w-4" />
-                    {t.takePhoto}
-                  </Button>
-                  <Button type="button" variant="outline" className="gap-2">
-                    <Upload className="h-4 w-4" />
-                    {t.uploadPrescription}
-                  </Button>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FileUpload
+                    buttonText={t.takePhoto}
+                    buttonIcon="camera"
+                    acceptedTypes="image/*"
+                    onFileUploaded={(url, type) => {
+                      if (type === 'photo') setPhotoUrl(url);
+                    }}
+                  />
+                  <FileUpload
+                    buttonText={t.uploadPrescription}
+                    buttonIcon="upload"
+                    acceptedTypes=".pdf,image/*"
+                    onFileUploaded={(url, type) => {
+                      if (type === 'prescription') setPrescriptionUrl(url);
+                    }}
+                  />
                 </div>
                 
                 <Button type="submit" className="w-full" disabled={loading}>
@@ -359,9 +397,44 @@ export const KalnadaiFarmerDashboard: React.FC<Props> = ({ language }) => {
                     <div className="text-sm">
                       <strong>Reason:</strong> {entry.Reason}
                     </div>
-                    <Button variant="ghost" size="sm">
-                      {t.viewDetails}
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      onClick={() => setExpandedEntry(expandedEntry === entry.EntryID ? null : entry.EntryID)}
+                      className="gap-2"
+                    >
+                      <Eye className="h-4 w-4" />
+                      {expandedEntry === entry.EntryID ? 'Hide Details' : t.viewDetails}
                     </Button>
+                    
+                    {expandedEntry === entry.EntryID && (
+                      <div className="mt-4 p-4 bg-muted rounded-lg space-y-2 text-sm">
+                        <div className="grid grid-cols-2 gap-4">
+                          <div><strong>Farm:</strong> {entry.FarmName}</div>
+                          <div><strong>State:</strong> {entry.State}</div>
+                          <div><strong>District:</strong> {entry.District}</div>
+                          <div><strong>Duration:</strong> {entry.Duration}</div>
+                          <div><strong>Blockchain ID:</strong> {entry.BlockchainID}</div>
+                          <div><strong>Vet Status:</strong> {entry.VetApproved}</div>
+                        </div>
+                        {entry.PhotoURL && (
+                          <div>
+                            <strong>Photo:</strong>
+                            <a href={entry.PhotoURL} target="_blank" rel="noopener noreferrer" className="ml-2 text-primary hover:underline">
+                              View Photo
+                            </a>
+                          </div>
+                        )}
+                        {entry.PrescriptionFileURL && (
+                          <div>
+                            <strong>Prescription:</strong>
+                            <a href={entry.PrescriptionFileURL} target="_blank" rel="noopener noreferrer" className="ml-2 text-primary hover:underline">
+                              View Prescription
+                            </a>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -379,9 +452,27 @@ export const KalnadaiFarmerDashboard: React.FC<Props> = ({ language }) => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted-foreground">
-                  Animal TN-ERD-001 (Cow) treated with Oxytetracycline has 2 days remaining in withdrawal period.
-                </p>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between p-3 border-l-4 border-warning bg-warning/5 rounded">
+                    <div>
+                      <p className="font-medium">Withdrawal Period Active</p>
+                      <p className="text-sm text-muted-foreground">
+                        Animal TN-ERD-001 (Cow) treated with Oxytetracycline has 2 days remaining
+                      </p>
+                    </div>
+                    <Badge variant="outline">2 days left</Badge>
+                  </div>
+                  
+                  <div className="flex items-center justify-between p-3 border-l-4 border-danger bg-danger/5 rounded">
+                    <div>
+                      <p className="font-medium">MRL Limit Approached</p>
+                      <p className="text-sm text-muted-foreground">
+                        High antibiotic usage detected this month
+                      </p>
+                    </div>
+                    <Badge variant="destructive">Action Required</Badge>
+                  </div>
+                </div>
               </CardContent>
             </Card>
             
@@ -389,13 +480,46 @@ export const KalnadaiFarmerDashboard: React.FC<Props> = ({ language }) => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <CheckCircle className="h-5 w-5 text-success" />
-                  Compliance Status
+                  Detailed Compliance Status
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted-foreground">
-                  Your farm is currently 85% compliant with MRL regulations.
-                </p>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">Overall Compliance</span>
+                    <div className="flex items-center gap-2">
+                      <div className="w-20 bg-gray-200 rounded-full h-2">
+                        <div className="bg-success h-2 rounded-full" style={{width: '85%'}}></div>
+                      </div>
+                      <span className="text-sm font-medium">85%</span>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span>MRL Compliance:</span>
+                      <span className="text-success">Good</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Record Keeping:</span>
+                      <span className="text-success">Complete</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Vet Approvals:</span>
+                      <span className="text-warning">Pending: 2</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Withdrawal Violations:</span>
+                      <span className="text-success">None</span>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-4 p-3 bg-muted rounded-lg">
+                    <p className="text-sm">
+                      <strong>Next Action:</strong> Submit pending entries for veterinary approval
+                    </p>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </div>

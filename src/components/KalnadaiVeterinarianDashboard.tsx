@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { CheckCircle, XCircle, FileText, Users } from 'lucide-react';
+import { FileUpload } from '@/components/FileUpload';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/components/AuthProvider';
 import { supabase } from '@/integrations/supabase/client';
@@ -317,11 +318,17 @@ export const KalnadaiVeterinarianDashboard: React.FC<Props> = ({ language }) => 
               <div className="space-y-4">
                 <div className="border-2 border-dashed border-muted rounded-lg p-8 text-center">
                   <FileText className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                  <Button variant="outline">
-                    Upload Prescription
-                  </Button>
+                  <FileUpload
+                    buttonText="Upload Prescription"
+                    buttonIcon="upload"
+                    acceptedTypes=".pdf,image/*"
+                    onFileUploaded={(url, type) => {
+                      console.log('Prescription uploaded:', url);
+                      // Here you could save to a prescriptions table
+                    }}
+                  />
                   <p className="text-sm text-muted-foreground mt-2">
-                    Upload PDF or JPEG files
+                    Upload PDF or JPEG files with digital signature
                   </p>
                 </div>
                 

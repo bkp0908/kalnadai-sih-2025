@@ -4,7 +4,8 @@ import { LoginPage } from "@/components/LoginPage";
 import { KalnadaiFarmerDashboard } from "@/components/KalnadaiFarmerDashboard";
 import { KalnadaiVeterinarianDashboard } from "@/components/KalnadaiVeterinarianDashboard";
 import { KalnadaiGovernmentDashboard } from "@/components/KalnadaiGovernmentDashboard";
-import { Bell, User, LogOut, Languages } from "lucide-react";
+import { User, LogOut, Languages } from "lucide-react";
+import { NotificationBell } from "@/components/NotificationBell";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
@@ -68,10 +69,7 @@ const Index = () => {
                 {language === 'english' ? 'தமிழ்' : 'English'}
               </Button>
               
-              <Button variant="ghost" size="icon" className="relative">
-                <Bell className="h-5 w-5" />
-                <span className="absolute -top-1 -right-1 h-3 w-3 bg-danger rounded-full"></span>
-              </Button>
+              <NotificationBell />
               
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { MapPin, AlertTriangle, CheckCircle, Download, Filter } from 'lucide-react';
+import { IndiaMap } from '@/components/IndiaMap';
 import { useAuth } from '@/components/AuthProvider';
 import { supabase } from '@/integrations/supabase/client';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
@@ -307,73 +308,204 @@ export const KalnadaiGovernmentDashboard: React.FC<Props> = ({ language }) => {
         </TabsList>
 
         <TabsContent value="overview">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="space-y-6">
+            {/* India Map Integration */}
             <Card>
               <CardHeader>
-                <CardTitle>{t.districtWiseCompliance}</CardTitle>
+                <CardTitle>India Compliance Map</CardTitle>
+                <CardDescription>Interactive map showing state and district-wise compliance</CardDescription>
               </CardHeader>
               <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={chartData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="district" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Bar dataKey="compliance" fill="#8884d8" />
-                  </BarChart>
-                </ResponsiveContainer>
+                <IndiaMap language={language} />
               </CardContent>
             </Card>
-            
-            <Card>
-              <CardHeader>
-                <CardTitle>{t.animalTypeDistribution}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
-                  <PieChart>
-                    <Pie
-                      data={animalChartData}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={false}
-                      outerRadius={80}
-                      fill="#8884d8"
-                      dataKey="value"
-                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>{t.districtWiseCompliance}</CardTitle>
+                  <CardDescription>Compliance percentage by district (Government Standard Format)</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={350}>
+                    <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+                      <XAxis 
+                        dataKey="district" 
+                        angle={-45}
+                        textAnchor="end"
+                        height={80}
+                        fontSize={12}
+                        stroke="#666"
+                      />
+                      <YAxis 
+                        label={{ value: 'Compliance %', angle: -90, position: 'insideLeft' }}
+                        stroke="#666"
+                        fontSize={12}
+                      />
+                      <Tooltip 
+                        contentStyle={{ 
+                          backgroundColor: '#f8f9fa', 
+                          border: '1px solid #dee2e6',
+                          borderRadius: '4px'
+                        }}
+                        formatter={(value, name) => [`${value}%`, 'Compliance Rate']}
+                        labelFormatter={(label) => `District: ${label}`}
+                      />
+                      <Legend />
+                      <Bar 
+                        dataKey="compliance" 
+                        fill="#2563eb"
+                        name="Compliance Rate (%)"
+                        radius={[2, 2, 0, 0]}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardHeader>
+                  <CardTitle>Monthly Compliance Trend</CardTitle>
+                  <CardDescription>Year-over-year compliance tracking</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={350}>
+                    <BarChart 
+                      data={[
+                        { month: 'Jan', compliance: 78, target: 85 },
+                        { month: 'Feb', compliance: 82, target: 85 },
+                        { month: 'Mar', compliance: 79, target: 85 },
+                        { month: 'Apr', compliance: 85, target: 85 },
+                        { month: 'May', compliance: 87, target: 85 },
+                        { month: 'Jun', compliance: 84, target: 85 },
+                        { month: 'Jul', compliance: 88, target: 85 },
+                        { month: 'Aug', compliance: 86, target: 85 },
+                        { month: 'Sep', compliance: 89, target: 85 }
+                      ]}
+                      margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                     >
-                      {animalChartData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+                      <XAxis dataKey="month" stroke="#666" fontSize={12} />
+                      <YAxis stroke="#666" fontSize={12} />
+                      <Tooltip />
+                      <Legend />
+                      <Bar dataKey="compliance" fill="#22c55e" name="Actual Compliance %" />
+                      <Bar dataKey="target" fill="#94a3b8" name="Target %" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </TabsContent>
 
         <TabsContent value="regional">
-          <Card>
-            <CardHeader>
-              <CardTitle>{t.drugUsagePattern}</CardTitle>
-              <CardDescription>Usage patterns across different antimicrobial drugs</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={400}>
-                <BarChart data={drugChartData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="drug" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="count" fill="#82ca9d" />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>{t.drugUsagePattern}</CardTitle>
+                <CardDescription>Antimicrobial usage patterns - Government Standard Report Format</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={400}>
+                  <BarChart 
+                    data={drugChartData}
+                    margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+                    <XAxis 
+                      dataKey="drug" 
+                      angle={-45}
+                      textAnchor="end"
+                      height={80}
+                      fontSize={11}
+                      stroke="#666"
+                    />
+                    <YAxis 
+                      label={{ value: 'Usage Count', angle: -90, position: 'insideLeft' }}
+                      stroke="#666"
+                      fontSize={12}
+                    />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: '#f8f9fa', 
+                        border: '1px solid #dee2e6',
+                        borderRadius: '4px'
+                      }}
+                      formatter={(value, name) => [`${value} farms`, 'Usage Count']}
+                      labelFormatter={(label) => `Drug: ${label}`}
+                    />
+                    <Legend />
+                    <Bar 
+                      dataKey="count" 
+                      fill="#10b981"
+                      name="Number of Farms Using"
+                      radius={[2, 2, 0, 0]}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Regional Risk Assessment</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {[
+                      { region: 'Erode', risk: 'High', cases: 12, trend: 'increasing' },
+                      { region: 'Namakkal', risk: 'Medium', cases: 6, trend: 'stable' },
+                      { region: 'Salem', risk: 'Medium', cases: 8, trend: 'decreasing' },
+                      { region: 'Coimbatore', risk: 'Low', cases: 3, trend: 'stable' }
+                    ].map((item) => (
+                      <div key={item.region} className="flex items-center justify-between p-3 border rounded-lg">
+                        <div>
+                          <h4 className="font-medium">{item.region}</h4>
+                          <p className="text-sm text-muted-foreground">{item.cases} non-compliant cases</p>
+                        </div>
+                        <div className="text-right">
+                          <Badge variant={item.risk === 'High' ? 'destructive' : item.risk === 'Medium' ? 'outline' : 'secondary'}>
+                            {item.risk} Risk
+                          </Badge>
+                          <p className="text-xs text-muted-foreground mt-1">{item.trend}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Drug Category Analysis</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={250}>
+                    <BarChart 
+                      data={[
+                        { category: 'Antibiotics', count: 45, critical: 8 },
+                        { category: 'Anti-parasitic', count: 23, critical: 2 },
+                        { category: 'Anti-inflammatory', count: 31, critical: 1 },
+                        { category: 'Hormones', count: 12, critical: 5 }
+                      ]}
+                      layout="horizontal"
+                    >
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis type="number" />
+                      <YAxis dataKey="category" type="category" width={100} fontSize={10} />
+                      <Tooltip />
+                      <Legend />
+                      <Bar dataKey="count" fill="#3b82f6" name="Total Usage" />
+                      <Bar dataKey="critical" fill="#ef4444" name="Critical Cases" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
         </TabsContent>
 
         <TabsContent value="compliance">
