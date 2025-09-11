@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, ZoomIn } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { ComposableMap, Geographies, Geography, ZoomableGroup } from 'react-simple-maps';
 
 interface District {
   name: string;
@@ -19,6 +20,22 @@ interface IndiaMapProps {
 export const IndiaMap: React.FC<IndiaMapProps> = ({ language, onDistrictSelect }) => {
   const [currentView, setCurrentView] = useState<'india' | 'tamilnadu'>('india');
   const [selectedDistrict, setSelectedDistrict] = useState<string | null>(null);
+  const [indiaGeoData, setIndiaGeoData] = useState<any>(null);
+  const [tamilNaduGeoData, setTamilNaduGeoData] = useState<any>(null);
+
+  useEffect(() => {
+    // Load India map data
+    fetch('/data/india-map.json')
+      .then(response => response.json())
+      .then(data => setIndiaGeoData(data))
+      .catch(error => console.error('Error loading India map:', error));
+    
+    // Load Tamil Nadu districts data
+    fetch('/data/tamil-nadu-districts.json')
+      .then(response => response.json())
+      .then(data => setTamilNaduGeoData(data))
+      .catch(error => console.error('Error loading Tamil Nadu map:', error));
+  }, []);
 
   // Mock compliance data for Tamil Nadu districts
   const tamilNaduDistricts: District[] = [
@@ -78,132 +95,187 @@ export const IndiaMap: React.FC<IndiaMapProps> = ({ language, onDistrictSelect }
 
   const t = translations[language];
 
-  const renderIndiaMap = () => (
-    <div className="space-y-4">
-      <div className="text-center">
-        <h3 className="text-xl font-semibold mb-2">{t.indiaMap}</h3>
-        <p className="text-sm text-muted-foreground">{t.clickToZoom}</p>
-      </div>
-      
-      {/* Simplified India SVG Map */}
-      <div className="relative bg-gray-50 rounded-lg p-4 min-h-[400px] flex items-center justify-center">
-        <svg width="400" height="300" viewBox="0 0 400 300" className="border rounded">
-          {/* India outline (simplified) */}
-          <path
-            d="M80 50 L320 50 L340 80 L330 120 L340 160 L320 190 L300 220 L250 240 L200 250 L150 240 L100 220 L80 190 L70 160 L80 120 L70 80 Z"
-            fill="#e5e7eb"
-            stroke="#9ca3af"
-            strokeWidth="2"
-          />
-          
-          {/* Tamil Nadu (highlighted) */}
-          <path
-            d="M200 180 L240 180 L250 200 L240 220 L220 230 L200 225 L185 210 L190 190 Z"
-            fill="#3b82f6"
-            stroke="#1d4ed8"
-            strokeWidth="2"
-            className="cursor-pointer hover:fill-blue-600 transition-colors"
-            onClick={() => setCurrentView('tamilnadu')}
-          />
-          
-          {/* Other states with basic compliance colors */}
-          <circle cx="150" cy="100" r="15" fill="#22c55e" className="opacity-70" />
-          <circle cx="200" cy="90" r="12" fill="#eab308" className="opacity-70" />
-          <circle cx="250" cy="110" r="18" fill="#ef4444" className="opacity-70" />
-          <circle cx="120" cy="140" r="14" fill="#22c55e" className="opacity-70" />
-          <circle cx="280" cy="140" r="16" fill="#eab308" className="opacity-70" />
-          
-          {/* Tamil Nadu label */}
-          <text x="215" y="205" textAnchor="middle" className="text-xs font-medium fill-white">
-            Tamil Nadu
-          </text>
-        </svg>
+  const renderIndiaMap = () => {
+    if (!indiaGeoData) {
+      return (
+        <div className="flex items-center justify-center h-[400px]">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
+            <p className="text-sm text-muted-foreground">Loading map...</p>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="space-y-4">
+        <div className="text-center">
+          <h3 className="text-xl font-semibold mb-2">{t.indiaMap}</h3>
+          <p className="text-sm text-muted-foreground flex items-center justify-center gap-2">
+            <ZoomIn className="h-4 w-4" />
+            {t.clickToZoom}
+          </p>
+        </div>
         
-        {/* Legend */}
-        <div className="absolute top-4 right-4 bg-white p-3 rounded-lg shadow-md">
-          <h4 className="text-sm font-medium mb-2">Compliance Status</h4>
-          <div className="space-y-1 text-xs">
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-green-500 rounded"></div>
-              <span>Good (≥85%)</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-yellow-500 rounded"></div>
-              <span>Warning (70-84%)</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-red-500 rounded"></div>
-              <span>High Risk (&lt;70%)</span>
+        {/* Real India Map using react-simple-maps */}
+        <div className="relative bg-background rounded-lg border p-4 min-h-[500px]">
+          <ComposableMap
+            projection="geoMercator"
+            projectionConfig={{
+              scale: 1000,
+              center: [78, 22]
+            }}
+            width={800}
+            height={500}
+            className="w-full h-full"
+          >
+            <ZoomableGroup>
+              <Geographies geography={indiaGeoData}>
+                {({ geographies }) =>
+                  geographies.map((geo) => {
+                    const stateName = geo.properties.name;
+                    const compliance = geo.properties.compliance || 80;
+                    const fillColor = getComplianceColor(compliance);
+                    
+                    return (
+                      <Geography
+                        key={geo.rsmKey}
+                        geography={geo}
+                        fill={fillColor}
+                        stroke="#FFFFFF"
+                        strokeWidth={0.5}
+                        style={{
+                          default: { outline: "none" },
+                          hover: { 
+                            outline: "none", 
+                            fill: stateName === 'Tamil Nadu' ? "#2563eb" : fillColor,
+                            filter: "brightness(1.1)",
+                            cursor: stateName === 'Tamil Nadu' ? "pointer" : "default"
+                          },
+                          pressed: { outline: "none" }
+                        }}
+                        onClick={() => {
+                          if (stateName === 'Tamil Nadu') {
+                            setCurrentView('tamilnadu');
+                          }
+                        }}
+                      />
+                    );
+                  })
+                }
+              </Geographies>
+            </ZoomableGroup>
+          </ComposableMap>
+          
+          {/* Legend */}
+          <div className="absolute top-4 right-4 bg-card p-4 rounded-lg shadow-lg border">
+            <h4 className="text-sm font-semibold mb-3">Compliance Status</h4>
+            <div className="space-y-2 text-xs">
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-3 bg-green-500 rounded"></div>
+                <span>Good (≥85%)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-3 bg-yellow-500 rounded"></div>
+                <span>Warning (70-84%)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-3 bg-red-500 rounded"></div>
+                <span>High Risk (&lt;70%)</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  };
 
-  const renderTamilNaduMap = () => (
-    <div className="space-y-4">
-      <div className="flex items-center gap-2">
-        <Button 
-          variant="outline" 
-          size="sm" 
-          onClick={() => setCurrentView('india')}
-          className="gap-2"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          {t.backToIndia}
-        </Button>
-        <h3 className="text-xl font-semibold">{t.tamilnaduMap}</h3>
-      </div>
-      
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Tamil Nadu District Map */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">District Compliance</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="relative bg-gray-50 rounded-lg p-4 min-h-[300px]">
-              <svg width="100%" height="280" viewBox="0 0 300 280">
-                {/* Simplified Tamil Nadu outline */}
-                <path
-                  d="M50 50 L250 50 L270 80 L260 120 L270 160 L250 190 L230 220 L180 240 L130 235 L80 220 L50 190 L40 160 L50 120 L40 80 Z"
-                  fill="#f3f4f6"
-                  stroke="#9ca3af"
-                  strokeWidth="2"
-                />
-                
-                {/* District circles with compliance colors */}
-                {tamilNaduDistricts.map((district, index) => {
-                  const x = 80 + (index % 4) * 50;
-                  const y = 80 + Math.floor(index / 4) * 50;
-                  return (
-                    <g key={district.name}>
-                      <circle
-                        cx={x}
-                        cy={y}
-                        r="16"
-                        fill={getComplianceColor(district.compliance)}
-                        stroke="#ffffff"
-                        strokeWidth="2"
-                        className="cursor-pointer hover:opacity-80 transition-opacity"
-                        onClick={() => handleDistrictClick(district)}
-                      />
-                      <text
-                        x={x}
-                        y={y + 25}
-                        textAnchor="middle"
-                        className="text-xs font-medium fill-gray-700"
-                      >
-                        {district.name.length > 8 ? district.name.substring(0, 8) + '...' : district.name}
-                      </text>
-                    </g>
-                  );
-                })}
-              </svg>
-            </div>
-          </CardContent>
-        </Card>
+  const renderTamilNaduMap = () => {
+    if (!tamilNaduGeoData) {
+      return (
+        <div className="flex items-center justify-center h-[400px]">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
+            <p className="text-sm text-muted-foreground">Loading districts...</p>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center gap-2">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => setCurrentView('india')}
+            className="gap-2"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            {t.backToIndia}
+          </Button>
+          <h3 className="text-xl font-semibold">{t.tamilnaduMap}</h3>
+        </div>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Tamil Nadu District Map */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">District Compliance Map</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="relative bg-background rounded-lg border p-4 min-h-[400px]">
+                <ComposableMap
+                  projection="geoMercator"
+                  projectionConfig={{
+                    scale: 6000,
+                    center: [78.6, 11.1]
+                  }}
+                  width={400}
+                  height={350}
+                  className="w-full h-full"
+                >
+                  <ZoomableGroup>
+                    <Geographies geography={tamilNaduGeoData}>
+                      {({ geographies }) =>
+                        geographies.map((geo) => {
+                          const districtName = geo.properties.name;
+                          const compliance = geo.properties.compliance || 80;
+                          const fillColor = getComplianceColor(compliance);
+                          
+                          return (
+                            <Geography
+                              key={geo.rsmKey}
+                              geography={geo}
+                              fill={fillColor}
+                              stroke="#FFFFFF"
+                              strokeWidth={0.8}
+                              style={{
+                                default: { outline: "none" },
+                                hover: { 
+                                  outline: "none", 
+                                  fill: fillColor,
+                                  filter: "brightness(1.1)",
+                                  cursor: "pointer"
+                                },
+                                pressed: { outline: "none" }
+                              }}
+                              onClick={() => {
+                                const district = tamilNaduDistricts.find(d => d.name === districtName);
+                                if (district) {
+                                  handleDistrictClick(district);
+                                }
+                              }}
+                            />
+                          );
+                        })
+                      }
+                    </Geographies>
+                  </ZoomableGroup>
+                </ComposableMap>
+              </div>
+            </CardContent>
+          </Card>
         
         {/* District Details */}
         <Card>
@@ -308,6 +380,7 @@ export const IndiaMap: React.FC<IndiaMapProps> = ({ language, onDistrictSelect }
       </Card>
     </div>
   );
+};
 
   return currentView === 'india' ? renderIndiaMap() : renderTamilNaduMap();
 };

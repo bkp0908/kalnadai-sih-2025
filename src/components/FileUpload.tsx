@@ -58,7 +58,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
         .from('Farmers Dashboard')
         .upload(filePath, file, {
           cacheControl: '3600',
-          upsert: false
+          upsert: true
         });
 
       if (error) {

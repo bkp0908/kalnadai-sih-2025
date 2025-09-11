@@ -1,0 +1,239 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Tamil Nadu",
+        "state_code": "TN",
+        "compliance": 85
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [76.2, 8.0],
+          [80.3, 8.0],
+          [80.3, 13.5],
+          [76.2, 13.5],
+          [76.2, 8.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Kerala",
+        "state_code": "KL",
+        "compliance": 78
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [74.8, 8.2],
+          [77.5, 8.2],
+          [77.5, 12.8],
+          [74.8, 12.8],
+          [74.8, 8.2]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Karnataka",
+        "state_code": "KA",
+        "compliance": 92
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [74.0, 11.5],
+          [78.5, 11.5],
+          [78.5, 18.5],
+          [74.0, 18.5],
+          [74.0, 11.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Andhra Pradesh",
+        "state_code": "AP",
+        "compliance": 88
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [77.0, 12.5],
+          [84.8, 12.5],
+          [84.8, 19.9],
+          [77.0, 19.9],
+          [77.0, 12.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Telangana",
+        "state_code": "TS",
+        "compliance": 83
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [77.3, 15.8],
+          [81.3, 15.8],
+          [81.3, 19.9],
+          [77.3, 19.9],
+          [77.3, 15.8]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Maharashtra",
+        "state_code": "MH",
+        "compliance": 76
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [72.6, 15.6],
+          [80.9, 15.6],
+          [80.9, 22.0],
+          [72.6, 22.0],
+          [72.6, 15.6]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Gujarat",
+        "state_code": "GJ",
+        "compliance": 91
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [68.1, 20.1],
+          [74.5, 20.1],
+          [74.5, 24.7],
+          [68.1, 24.7],
+          [68.1, 20.1]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Rajasthan",
+        "state_code": "RJ",
+        "compliance": 82
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [69.5, 23.0],
+          [78.2, 23.0],
+          [78.2, 30.2],
+          [69.5, 30.2],
+          [69.5, 23.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Madhya Pradesh",
+        "state_code": "MP",
+        "compliance": 79
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [74.0, 21.1],
+          [82.8, 21.1],
+          [82.8, 26.9],
+          [74.0, 26.9],
+          [74.0, 21.1]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Uttar Pradesh",
+        "state_code": "UP",
+        "compliance": 74
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [77.1, 23.9],
+          [84.6, 23.9],
+          [84.6, 30.4],
+          [77.1, 30.4],
+          [77.1, 23.9]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Bihar",
+        "state_code": "BR",
+        "compliance": 69
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [83.3, 24.3],
+          [88.1, 24.3],
+          [88.1, 27.5],
+          [83.3, 27.5],
+          [83.3, 24.3]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "West Bengal",
+        "state_code": "WB",
+        "compliance": 87
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [85.8, 21.5],
+          [89.9, 21.5],
+          [89.9, 27.1],
+          [85.8, 27.1],
+          [85.8, 21.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Odisha",
+        "state_code": "OR",
+        "compliance": 84
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [81.3, 17.8],
+          [87.5, 17.8],
+          [87.5, 22.6],
+          [81.3, 22.6],
+          [81.3, 17.8]
+        ]]
+      }
+    }
+  ]
+}

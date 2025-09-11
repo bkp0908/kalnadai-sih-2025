@@ -1,0 +1,245 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Chennai",
+        "district_code": "CH",
+        "compliance": 92,
+        "totalEntries": 45,
+        "alerts": 2
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [80.0, 12.8],
+          [80.3, 12.8],
+          [80.3, 13.3],
+          [80.0, 13.3],
+          [80.0, 12.8]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Coimbatore",
+        "district_code": "CB",
+        "compliance": 87,
+        "totalEntries": 38,
+        "alerts": 3
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [76.5, 10.8],
+          [77.2, 10.8],
+          [77.2, 11.5],
+          [76.5, 11.5],
+          [76.5, 10.8]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Erode",
+        "district_code": "ER",
+        "compliance": 76,
+        "totalEntries": 52,
+        "alerts": 8
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [77.2, 11.0],
+          [77.9, 11.0],
+          [77.9, 11.7],
+          [77.2, 11.7],
+          [77.2, 11.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Salem",
+        "district_code": "SA",
+        "compliance": 81,
+        "totalEntries": 31,
+        "alerts": 5
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [77.8, 11.4],
+          [78.5, 11.4],
+          [78.5, 12.1],
+          [77.8, 12.1],
+          [77.8, 11.4]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Namakkal",
+        "district_code": "NK",
+        "compliance": 89,
+        "totalEntries": 44,
+        "alerts": 1
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [78.0, 11.0],
+          [78.4, 11.0],
+          [78.4, 11.4],
+          [78.0, 11.4],
+          [78.0, 11.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Tiruchirappalli",
+        "district_code": "TR",
+        "compliance": 84,
+        "totalEntries": 36,
+        "alerts": 4
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [78.4, 10.5],
+          [79.1, 10.5],
+          [79.1, 11.2],
+          [78.4, 11.2],
+          [78.4, 10.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Madurai",
+        "district_code": "MD",
+        "compliance": 79,
+        "totalEntries": 41,
+        "alerts": 6
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [77.8, 9.5],
+          [78.5, 9.5],
+          [78.5, 10.2],
+          [77.8, 10.2],
+          [77.8, 9.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Virudhunagar",
+        "district_code": "VR",
+        "compliance": 85,
+        "totalEntries": 28,
+        "alerts": 3
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [77.3, 9.2],
+          [78.0, 9.2],
+          [78.0, 9.9],
+          [77.3, 9.9],
+          [77.3, 9.2]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Tirunelveli",
+        "district_code": "TN",
+        "compliance": 88,
+        "totalEntries": 33,
+        "alerts": 2
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [77.4, 8.4],
+          [78.1, 8.4],
+          [78.1, 9.1],
+          [77.4, 9.1],
+          [77.4, 8.4]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Kanniyakumari",
+        "district_code": "KK",
+        "compliance": 91,
+        "totalEntries": 22,
+        "alerts": 1
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [77.1, 8.0],
+          [77.6, 8.0],
+          [77.6, 8.4],
+          [77.1, 8.4],
+          [77.1, 8.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Dindigul",
+        "district_code": "DG",
+        "compliance": 83,
+        "totalEntries": 29,
+        "alerts": 4
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [77.6, 10.0],
+          [78.3, 10.0],
+          [78.3, 10.7],
+          [77.6, 10.7],
+          [77.6, 10.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Karur",
+        "district_code": "KR",
+        "compliance": 86,
+        "totalEntries": 25,
+        "alerts": 2
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [78.0, 10.7],
+          [78.4, 10.7],
+          [78.4, 11.1],
+          [78.0, 11.1],
+          [78.0, 10.7]
+        ]]
+      }
+    }
+  ]
+}
