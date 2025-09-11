@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, ZoomIn } from 'lucide-react';
@@ -24,18 +24,28 @@ export const IndiaMap: React.FC<IndiaMapProps> = ({ language, onDistrictSelect }
   const [tamilNaduGeoData, setTamilNaduGeoData] = useState<any>(null);
 
   useEffect(() => {
-    // Load India map data
-    fetch('/data/india-map.json')
+    // Load India map data (states)
+    fetch('/data/india-states.geojson')
       .then(response => response.json())
       .then(data => setIndiaGeoData(data))
       .catch(error => console.error('Error loading India map:', error));
     
-    // Load Tamil Nadu districts data
-    fetch('/data/tamil-nadu-districts.json')
+    // Load all India districts data (we'll filter to Tamil Nadu)
+    fetch('/data/india-districts.geojson')
       .then(response => response.json())
       .then(data => setTamilNaduGeoData(data))
-      .catch(error => console.error('Error loading Tamil Nadu map:', error));
+      .catch(error => console.error('Error loading districts map:', error));
   }, []);
+
+  const tnGeoData = useMemo(() => {
+    if (!tamilNaduGeoData) return null;
+    const features = (tamilNaduGeoData.features || []).filter((f: any) => {
+      const props = f.properties || {};
+      const stateName = (props.ST_NM || props.state || props.NAME_1 || props.name || '').toString().toLowerCase();
+      return stateName === 'tamil nadu';
+    });
+    return { type: 'FeatureCollection', features } as any;
+  }, [tamilNaduGeoData]);
 
   // Mock compliance data for Tamil Nadu districts
   const tamilNaduDistricts: District[] = [
@@ -133,8 +143,10 @@ export const IndiaMap: React.FC<IndiaMapProps> = ({ language, onDistrictSelect }
               <Geographies geography={indiaGeoData}>
                 {({ geographies }) =>
                   geographies.map((geo) => {
-                    const stateName = geo.properties.name;
-                    const compliance = geo.properties.compliance || 80;
+                    const props: any = geo.properties || {};
+                    const stateName: string = (props.ST_NM || props.state || props.NAME_1 || props.name || '').toString();
+                    const isTamilNadu = stateName.toLowerCase() === 'tamil nadu';
+                    const compliance = (props.compliance as number) || 80;
                     const fillColor = getComplianceColor(compliance);
                     
                     return (
@@ -148,14 +160,14 @@ export const IndiaMap: React.FC<IndiaMapProps> = ({ language, onDistrictSelect }
                           default: { outline: "none" },
                           hover: { 
                             outline: "none", 
-                            fill: stateName === 'Tamil Nadu' ? "#2563eb" : fillColor,
+                            fill: isTamilNadu ? "#2563eb" : fillColor,
                             filter: "brightness(1.1)",
-                            cursor: stateName === 'Tamil Nadu' ? "pointer" : "default"
+                            cursor: isTamilNadu ? "pointer" : "default"
                           },
                           pressed: { outline: "none" }
                         }}
                         onClick={() => {
-                          if (stateName === 'Tamil Nadu') {
+                          if (isTamilNadu) {
                             setCurrentView('tamilnadu');
                           }
                         }}
@@ -236,11 +248,13 @@ export const IndiaMap: React.FC<IndiaMapProps> = ({ language, onDistrictSelect }
                   className="w-full h-full"
                 >
                   <ZoomableGroup>
-                    <Geographies geography={tamilNaduGeoData}>
+                    <Geographies geography={tnGeoData || tamilNaduGeoData}>
                       {({ geographies }) =>
                         geographies.map((geo) => {
-                          const districtName = geo.properties.name;
-                          const compliance = geo.properties.compliance || 80;
+                          const props: any = geo.properties || {};
+                          const districtName: string = (props.district || props.NAME_2 || props.name || '').toString();
+                          const matched = tamilNaduDistricts.find(d => d.name.toLowerCase() === districtName.toLowerCase());
+                          const compliance = matched?.compliance ?? 80;
                           const fillColor = getComplianceColor(compliance);
                           
                           return (
@@ -261,9 +275,8 @@ export const IndiaMap: React.FC<IndiaMapProps> = ({ language, onDistrictSelect }
                                 pressed: { outline: "none" }
                               }}
                               onClick={() => {
-                                const district = tamilNaduDistricts.find(d => d.name === districtName);
-                                if (district) {
-                                  handleDistrictClick(district);
+                                if (matched) {
+                                  handleDistrictClick(matched);
                                 }
                               }}
                             />
