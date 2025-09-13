@@ -56,7 +56,18 @@ const translations = {
     nonCompliant: 'Non-Compliant',
     inWithdrawal: 'In Withdrawal',
     vetApproved: 'Vet Approved',
-    pending: 'Pending Approval'
+    pending: 'Pending Approval',
+    description: 'Log antimicrobial usage for your animals',
+    administrationMethod: 'Administration Method',
+    placeholder: {
+      animalType: 'Select animal type',
+      medicine: 'Select medicine',
+      frequency: 'Select frequency',
+      method: 'Select method',
+      reason: 'Fever, Infection, etc.'
+    },
+    submitting: 'Submitting...',
+    reasonLabel: 'Reason:'
   },
   tamil: {
     welcome: 'மீண்டும் வரவேற்கிறோம்',
@@ -79,7 +90,18 @@ const translations = {
     nonCompliant: 'இணக்கமற்ற',
     inWithdrawal: 'திரும்பப் பெறுதலில்',
     vetApproved: 'மருத்துவர் ஒப்புதல்',
-    pending: 'ஒப்புதல் நிலுவையில்'
+    pending: 'ஒப்புதல் நிலுவையில்',
+    description: 'உங்கள் கால்நடைகளுக்கு நுண்ணுயிர் எதிர்ப்பு மருந்து பயன்பாட்டை பதிவு செய்யுங்கள்',
+    administrationMethod: 'மருந்து அளிக்கும் முறை',
+    placeholder: {
+      animalType: 'கால்நடை வகையைத் தேர்ந்தெடுக்கவும்',
+      medicine: 'மருந்தைத் தேர்ந்தெடுக்கவும்',
+      frequency: 'அடிக்கடி தேர்ந்தெடுக்கவும்',
+      method: 'முறையைத் தேர்ந்தெடுக்கவும்',
+      reason: 'காய்ச்சல், தொற்று, முதலியன.'
+    },
+    submitting: 'சமர்ப்பிக்கிறது...',
+    reasonLabel: 'காரணம்:'
   }
 };
 
@@ -229,7 +251,7 @@ export const KalnadaiFarmerDashboard: React.FC<Props> = ({ language }) => {
           <Card>
             <CardHeader>
               <CardTitle>{t.recordUsage}</CardTitle>
-              <CardDescription>Log antimicrobial usage for your animals</CardDescription>
+              <CardDescription>{t.description}</CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
@@ -238,7 +260,7 @@ export const KalnadaiFarmerDashboard: React.FC<Props> = ({ language }) => {
                     <Label htmlFor="animalType">{t.animalType}</Label>
                     <Select value={formData.animalType} onValueChange={(value) => setFormData({...formData, animalType: value})}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select animal type" />
+                        <SelectValue placeholder={t.placeholder.animalType} />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="Cow">Cow / பசு</SelectItem>
@@ -266,7 +288,7 @@ export const KalnadaiFarmerDashboard: React.FC<Props> = ({ language }) => {
                     <Label htmlFor="medicine">{t.drugName}</Label>
                     <Select value={formData.medicine} onValueChange={(value) => setFormData({...formData, medicine: value})}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select medicine" />
+                        <SelectValue placeholder={t.placeholder.medicine} />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="Oxytetracycline">Oxytetracycline</SelectItem>
@@ -293,7 +315,7 @@ export const KalnadaiFarmerDashboard: React.FC<Props> = ({ language }) => {
                     <Label htmlFor="frequency">{t.frequency}</Label>
                     <Select value={formData.frequency} onValueChange={(value) => setFormData({...formData, frequency: value})}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select frequency" />
+                        <SelectValue placeholder={t.placeholder.frequency} />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="Daily">Daily / தினமும்</SelectItem>
@@ -316,10 +338,10 @@ export const KalnadaiFarmerDashboard: React.FC<Props> = ({ language }) => {
                   </div>
 
                   <div>
-                    <Label htmlFor="administrationMethod">Administration Method</Label>
+                    <Label htmlFor="administrationMethod">{t.administrationMethod}</Label>
                     <Select value={formData.administrationMethod} onValueChange={(value) => setFormData({...formData, administrationMethod: value})}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select method" />
+                        <SelectValue placeholder={t.placeholder.method} />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="Oral">Oral / வாய் வழியாக</SelectItem>
@@ -339,7 +361,7 @@ export const KalnadaiFarmerDashboard: React.FC<Props> = ({ language }) => {
                     id="reason"
                     value={formData.reason}
                     onChange={(e) => setFormData({...formData, reason: e.target.value})}
-                    placeholder="Fever, Infection, etc."
+                    placeholder={t.placeholder.reason}
                     required
                   />
                 </div>
@@ -364,7 +386,7 @@ export const KalnadaiFarmerDashboard: React.FC<Props> = ({ language }) => {
                 </div>
                 
                 <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? 'Submitting...' : t.submit}
+                  {loading ? t.submitting : t.submit}
                 </Button>
               </form>
             </CardContent>
@@ -395,7 +417,7 @@ export const KalnadaiFarmerDashboard: React.FC<Props> = ({ language }) => {
                       </div>
                     </div>
                     <div className="text-sm">
-                      <strong>Reason:</strong> {entry.Reason}
+                      <strong>{t.reasonLabel}</strong> {entry.Reason}
                     </div>
                     <Button 
                       variant="ghost" 

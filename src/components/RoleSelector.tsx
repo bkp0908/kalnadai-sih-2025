@@ -89,7 +89,7 @@ export const RoleSelector = ({ onRoleSelect }: RoleSelectorProps) => {
                     </div>
                     <CardTitle>Farmer Portal</CardTitle>
                     <CardDescription>
-                      Log antimicrobial usage, manage livestock records, and receive compliance alerts
+                      கால்நடைகளுக்கு நுண்ணுயிர் எதிர்ப்பு மருந்து பயன்பாட்டை பதிவு செய்யுங்கள், கால்நடை பதிவுகளை நிர்வகிக்கவும், இணக்க எச்சரிக்கைகளைப் பெறவும்
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
