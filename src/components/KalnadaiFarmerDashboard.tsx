@@ -39,7 +39,7 @@ const translations = {
     welcome: 'Welcome back',
     recordUsage: 'Record Usage',
     treatmentHistory: 'Treatment History',
-    alerts: 'Alerts & Compliance',
+    alertsTab: 'Alerts & Compliance',
     animalType: 'Animal Type',
     animalId: 'Animal ID',
     drugName: 'Drug Name',
@@ -59,6 +59,8 @@ const translations = {
     pending: 'Pending Approval',
     description: 'Log antimicrobial usage for your animals',
     administrationMethod: 'Administration Method',
+    submitting: 'Submitting...',
+    reasonLabel: 'Reason:',
     placeholder: {
       animalType: 'Select animal type',
       medicine: 'Select medicine',
@@ -66,14 +68,34 @@ const translations = {
       method: 'Select method',
       reason: 'Fever, Infection, etc.'
     },
-    submitting: 'Submitting...',
-    reasonLabel: 'Reason:'
+    alerts: {
+      withdrawalPeriodAlert: 'Withdrawal Period Alert',
+      detailedComplianceStatus: 'Detailed Compliance Status',
+      withdrawalPeriodActive: 'Withdrawal Period Active',
+      mrlLimitApproached: 'MRL Limit Approached',
+      actionRequired: 'Action Required',
+      daysLeft: 'days left',
+      overallCompliance: 'Overall Compliance',
+      mrlCompliance: 'MRL Compliance',
+      recordKeeping: 'Record Keeping',
+      vetApprovals: 'Vet Approvals',
+      good: 'Good',
+      complete: 'Complete',
+      highUsageDetected: 'High antibiotic usage detected this month',
+      withdrawalRemaining: 'has {} days remaining'
+    },
+    history: {
+      prescription: 'Prescription:',
+      viewPrescription: 'View Prescription',
+      photo: 'Photo:',
+      viewPhoto: 'View Photo'
+    }
   },
   tamil: {
     welcome: 'மீண்டும் வரவேற்கிறோம்',
     recordUsage: 'பயன்பாட்டை பதிவு செய்க',
     treatmentHistory: 'சிகிச்சை வரலாறு',
-    alerts: 'எச்சரிக்கைகள் & இணக்கம்',
+    alertsTab: 'எச்சரிக்கைகள் & இணக்கம்',
     animalType: 'கால்நடை வகை',
     animalId: 'கால்நடை எண்',
     drugName: 'மருந்தின் பெயர்',
@@ -93,6 +115,8 @@ const translations = {
     pending: 'ஒப்புதல் நிலுவையில்',
     description: 'உங்கள் கால்நடைகளுக்கு நுண்ணுயிர் எதிர்ப்பு மருந்து பயன்பாட்டை பதிவு செய்யுங்கள்',
     administrationMethod: 'மருந்து அளிக்கும் முறை',
+    submitting: 'சமர்ப்பிக்கிறது...',
+    reasonLabel: 'காரணம்:',
     placeholder: {
       animalType: 'கால்நடை வகையைத் தேர்ந்தெடுக்கவும்',
       medicine: 'மருந்தைத் தேர்ந்தெடுக்கவும்',
@@ -100,8 +124,28 @@ const translations = {
       method: 'முறையைத் தேர்ந்தெடுக்கவும்',
       reason: 'காய்ச்சல், தொற்று, முதலியன.'
     },
-    submitting: 'சமர்ப்பிக்கிறது...',
-    reasonLabel: 'காரணம்:'
+    alerts: {
+      withdrawalPeriodAlert: 'திரும்பப் பெறும் காலம் எச்சரிக்கை',
+      detailedComplianceStatus: 'விரிவான இணக்க நிலை',
+      withdrawalPeriodActive: 'திரும்பப் பெறும் காலம் செயல்படுகிறது',
+      mrlLimitApproached: 'MRL வரம்பு நெருங்கப்பட்டது',
+      actionRequired: 'நடவடிக்கை தேவைப்படுகிறது',
+      daysLeft: 'நாட்கள் மீதமுள்ளன',
+      overallCompliance: 'ஒட்டுமொத்த இணக்கம்',
+      mrlCompliance: 'MRL இணக்கம்',
+      recordKeeping: 'பதிவு வைத்தல்',
+      vetApprovals: 'மருத்துவர் ஒப்புதல்கள்',
+      good: 'நல்லது',
+      complete: 'முழுமையானது',
+      highUsageDetected: 'இந்த மாதம் அதிக நுண்ணுயிர் எதிர்ப்பு மருந்து பயன்பாடு கண்டறியப்பட்டது',
+      withdrawalRemaining: '{} நாட்கள் மீதமுள்ளன'
+    },
+    history: {
+      prescription: 'மருந்துச்சீட்டு:',
+      viewPrescription: 'மருந்துச்சீட்டைப் பார்க்கவும்',
+      photo: 'புகைப்படம்:',
+      viewPhoto: 'புகைப்படத்தைப் பார்க்கவும்'
+    }
   }
 };
 
@@ -244,7 +288,7 @@ export const KalnadaiFarmerDashboard: React.FC<Props> = ({ language }) => {
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="record">{t.recordUsage}</TabsTrigger>
           <TabsTrigger value="history">{t.treatmentHistory}</TabsTrigger>
-          <TabsTrigger value="alerts">{t.alerts}</TabsTrigger>
+          <TabsTrigger value="alerts">{t.alertsTab}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="record">
@@ -441,17 +485,17 @@ export const KalnadaiFarmerDashboard: React.FC<Props> = ({ language }) => {
                         </div>
                         {entry.PhotoURL && (
                           <div>
-                            <strong>Photo:</strong>
+                            <strong>{t.history.photo}</strong>
                             <a href={entry.PhotoURL} target="_blank" rel="noopener noreferrer" className="ml-2 text-primary hover:underline">
-                              View Photo
+                              {t.history.viewPhoto}
                             </a>
                           </div>
                         )}
                         {entry.PrescriptionFileURL && (
                           <div>
-                            <strong>Prescription:</strong>
+                            <strong>{t.history.prescription}</strong>
                             <a href={entry.PrescriptionFileURL} target="_blank" rel="noopener noreferrer" className="ml-2 text-primary hover:underline">
-                              View Prescription
+                              {t.history.viewPrescription}
                             </a>
                           </div>
                         )}
@@ -470,29 +514,29 @@ export const KalnadaiFarmerDashboard: React.FC<Props> = ({ language }) => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <AlertTriangle className="h-5 w-5 text-warning" />
-                  Withdrawal Period Alert
+                  {t.alerts.withdrawalPeriodAlert}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between p-3 border-l-4 border-warning bg-warning/5 rounded">
                     <div>
-                      <p className="font-medium">Withdrawal Period Active</p>
+                      <p className="font-medium">{t.alerts.withdrawalPeriodActive}</p>
                       <p className="text-sm text-muted-foreground">
-                        Animal TN-ERD-001 (Cow) treated with Oxytetracycline has 2 days remaining
+                        Animal TN-ERD-001 (Cow) treated with Oxytetracycline {t.alerts.withdrawalRemaining.replace('{}', '2')}
                       </p>
                     </div>
-                    <Badge variant="outline">2 days left</Badge>
+                    <Badge variant="outline">2 {t.alerts.daysLeft}</Badge>
                   </div>
                   
                   <div className="flex items-center justify-between p-3 border-l-4 border-danger bg-danger/5 rounded">
                     <div>
-                      <p className="font-medium">MRL Limit Approached</p>
+                      <p className="font-medium">{t.alerts.mrlLimitApproached}</p>
                       <p className="text-sm text-muted-foreground">
-                        High antibiotic usage detected this month
+                        {t.alerts.highUsageDetected}
                       </p>
                     </div>
-                    <Badge variant="destructive">Action Required</Badge>
+                    <Badge variant="destructive">{t.alerts.actionRequired}</Badge>
                   </div>
                 </div>
               </CardContent>
@@ -502,13 +546,13 @@ export const KalnadaiFarmerDashboard: React.FC<Props> = ({ language }) => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <CheckCircle className="h-5 w-5 text-success" />
-                  Detailed Compliance Status
+                  {t.alerts.detailedComplianceStatus}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm">Overall Compliance</span>
+                    <span className="text-sm">{t.alerts.overallCompliance}</span>
                     <div className="flex items-center gap-2">
                       <div className="w-20 bg-gray-200 rounded-full h-2">
                         <div className="bg-success h-2 rounded-full" style={{width: '85%'}}></div>
@@ -519,15 +563,15 @@ export const KalnadaiFarmerDashboard: React.FC<Props> = ({ language }) => {
                   
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
-                      <span>MRL Compliance:</span>
-                      <span className="text-success">Good</span>
+                      <span>{t.alerts.mrlCompliance}:</span>
+                      <span className="text-success">{t.alerts.good}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>Record Keeping:</span>
-                      <span className="text-success">Complete</span>
+                      <span>{t.alerts.recordKeeping}:</span>
+                      <span className="text-success">{t.alerts.complete}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>Vet Approvals:</span>
+                      <span>{t.alerts.vetApprovals}:</span>
                       <span className="text-warning">Pending: 2</span>
                     </div>
                     <div className="flex justify-between">
