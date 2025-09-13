@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { AlertTriangle, CheckCircle, Info } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { AlertTriangle, CheckCircle, Info, Download } from "lucide-react";
 
 const MRLPage = () => {
   return (
@@ -8,9 +9,15 @@ const MRLPage = () => {
       <div className="container mx-auto px-6 py-8">
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-foreground mb-4">MRL Compliance</h1>
-          <p className="text-xl text-muted-foreground">
+          <p className="text-xl text-muted-foreground mb-4">
             Maximum Residue Limits (MRL) guidelines and compliance monitoring for food safety
           </p>
+          <Button asChild className="gap-2">
+            <a href="/docs/MRL-Guidelines.pdf" target="_blank" rel="noopener noreferrer">
+              <Download className="h-4 w-4" />
+              Download Official MRL Guidelines (PDF)
+            </a>
+          </Button>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-6 mb-8">

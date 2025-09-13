@@ -63,15 +63,36 @@ const Navbar = () => {
               <Link to="/login">Login</Link>
             </Button>
             
-            <Button variant="ghost" asChild>
-              <a 
-                href="https://www.youtube.com/watch?v=NVIe8Bj78rE" 
-                target="_blank" 
-                rel="noopener noreferrer"
-              >
-                Video Tutorial
-              </a>
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="flex items-center gap-1">
+                  Video Tutorial
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem asChild>
+                  <a 
+                    href="https://youtu.be/NVIe8Bj78rE?si=uqHDbKKrfbj5Mqmh" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="w-full"
+                  >
+                    English Tutorial
+                  </a>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <a 
+                    href="https://youtu.be/-PRj8Rj7x4c?si=esORghdZMi-Pd35T" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="w-full"
+                  >
+                    Tamil Tutorial
+                  </a>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             
             <LegalitiesDropdown />
             
@@ -98,16 +119,29 @@ const Navbar = () => {
                     <Link to="/login" onClick={() => setIsOpen(false)}>Login</Link>
                   </Button>
                   
-                  <Button variant="ghost" asChild className="justify-start">
-                    <a 
-                      href="https://www.youtube.com/watch?v=NVIe8Bj78rE" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      Video Tutorial
-                    </a>
-                  </Button>
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium text-foreground px-3">Video Tutorial</p>
+                    <Button variant="ghost" asChild className="justify-start w-full">
+                      <a 
+                        href="https://youtu.be/NVIe8Bj78rE?si=uqHDbKKrfbj5Mqmh" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        English Tutorial
+                      </a>
+                    </Button>
+                    <Button variant="ghost" asChild className="justify-start w-full">
+                      <a 
+                        href="https://youtu.be/-PRj8Rj7x4c?si=esORghdZMi-Pd35T" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        Tamil Tutorial
+                      </a>
+                    </Button>
+                  </div>
                   
                   <LegalitiesDropdown isMobile />
                   

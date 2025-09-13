@@ -25,20 +25,6 @@ const Homepage = () => {
               Empowering farmers, veterinarians, and government officials with comprehensive 
               livestock health management and compliance monitoring tools.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild size="lg" className="text-lg px-8">
-                <Link to="/login">Get Started</Link>
-              </Button>
-              <Button asChild variant="outline" size="lg" className="text-lg px-8">
-                <a 
-                  href="https://www.youtube.com/watch?v=NVIe8Bj78rE" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                >
-                  Watch Tutorial
-                </a>
-              </Button>
-            </div>
           </div>
         </div>
       </section>
@@ -175,18 +161,98 @@ const Homepage = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* Statistics Section */}
       <section className="py-20 bg-primary/5">
-        <div className="container mx-auto px-6 text-center">
-          <h2 className="text-4xl font-bold text-foreground mb-4">
-            Ready to Get Started?
-          </h2>
-          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Join the digital revolution in livestock management and ensure food safety compliance
-          </p>
-          <Button asChild size="lg" className="text-lg px-8">
-            <Link to="/login">Access Portal</Link>
-          </Button>
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-foreground mb-4">
+              Did You Know?
+            </h2>
+            <p className="text-xl text-muted-foreground">
+              Key statistics about antimicrobial resistance in livestock
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <Card className="text-center hover:shadow-elegant transition-shadow duration-300">
+              <CardContent className="pt-6">
+                <div className="text-4xl font-bold text-primary mb-2">Top 5</div>
+                <p className="text-foreground font-medium mb-2">Global Consumer</p>
+                <p className="text-sm text-muted-foreground">
+                  India is among the top 5 consumers of veterinary antimicrobials globally.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="text-center hover:shadow-elegant transition-shadow duration-300">
+              <CardContent className="pt-6">
+                <div className="text-4xl font-bold text-secondary mb-2">60%</div>
+                <p className="text-foreground font-medium mb-2">Unsupervised Usage</p>
+                <p className="text-sm text-muted-foreground">
+                  Up to 60% of antimicrobials in livestock are used without veterinary oversight.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="text-center hover:shadow-elegant transition-shadow duration-300">
+              <CardContent className="pt-6">
+                <div className="text-4xl font-bold text-accent mb-2">10M</div>
+                <p className="text-foreground font-medium mb-2">Deaths by 2050</p>
+                <p className="text-sm text-muted-foreground">
+                  Antimicrobial resistance could cause 10 million deaths annually by 2050 if not controlled.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Information Section */}
+      <section className="py-20">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-foreground mb-4">
+              Understanding AMR
+            </h2>
+            <p className="text-xl text-muted-foreground">
+              Essential information about antimicrobial resistance and monitoring
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-3 gap-8">
+            <Card className="hover:shadow-elegant transition-shadow duration-300">
+              <CardHeader>
+                <CardTitle className="text-xl">What is AMR?</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground leading-relaxed">
+                  Antimicrobial Resistance (AMR) occurs when bacteria, viruses, fungi, and parasites evolve to resist the drugs designed to kill them. This makes infections harder to treat and increases the risk of disease spread, severe illness, and death.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="hover:shadow-elegant transition-shadow duration-300">
+              <CardHeader>
+                <CardTitle className="text-xl">Why Monitor AMU?</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground leading-relaxed">
+                  Monitoring Antimicrobial Usage (AMU) in livestock is crucial for preventing the development of resistant bacteria that can transfer to humans through the food chain, ensuring food safety and protecting public health.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="hover:shadow-elegant transition-shadow duration-300">
+              <CardHeader>
+                <CardTitle className="text-xl">What are MRLs?</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground leading-relaxed">
+                  Maximum Residue Limits (MRLs) are the maximum concentrations of antimicrobial residues that are legally permitted in food products. They ensure that food consumption remains safe for human health.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </section>
 

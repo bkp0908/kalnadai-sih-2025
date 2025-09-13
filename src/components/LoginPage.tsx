@@ -7,7 +7,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuth } from '@/components/AuthProvider';
 import { useToast } from '@/hooks/use-toast';
-import { Globe, Languages } from 'lucide-react';
+import { Globe, Languages, ArrowLeft } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 interface LoginPageProps {
   language: 'english' | 'tamil';
@@ -163,6 +164,14 @@ export const LoginPage: React.FC<LoginPageProps> = ({ language, setLanguage }) =
   return (
     <div className="min-h-screen bg-gradient-subtle flex items-center justify-center p-4">
       <div className="w-full max-w-md">
+        <div className="flex justify-start mb-4">
+          <Button variant="ghost" asChild size="sm">
+            <Link to="/" className="flex items-center gap-2">
+              <ArrowLeft className="h-4 w-4" />
+              Back to Home
+            </Link>
+          </Button>
+        </div>
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
             <div className="gradient-primary w-16 h-16 rounded-2xl flex items-center justify-center">
