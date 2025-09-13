@@ -12,6 +12,7 @@ import { FileUpload } from '@/components/FileUpload';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/components/AuthProvider';
 import { supabase } from '@/integrations/supabase/client';
+import { isInWithdrawalPeriod, getDaysUntilWithdrawalEnd, getWithdrawalPeriod } from '@/data/withdrawalPeriods';
 
 interface FarmerEntry {
   EntryID: number;
