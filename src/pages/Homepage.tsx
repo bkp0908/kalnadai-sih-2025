@@ -1,180 +1,121 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Shield, Database, BookOpen, AlertTriangle, Users, Stethoscope } from "lucide-react";
-import { Link } from "react-router-dom";
+import React from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import Navbar from '@/components/Navbar';
+import { CheckCircle, AlertTriangle, Shield, Users, TrendingUp, Globe } from 'lucide-react';
+import indianCowHero from '@/assets/indian-cow-hero.jpg';
+import indianFarm from '@/assets/indian-farm.jpg';
+import governmentBuilding from '@/assets/government-building.jpg';
 
-const Homepage = () => {
+export const Homepage: React.FC = () => {
   return (
-    <div className="min-h-screen bg-background">
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-primary/10 via-background to-secondary/10 py-20">
-        <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto text-center">
-            <div className="flex justify-center mb-6">
-              <div className="gradient-primary w-20 h-20 rounded-2xl flex items-center justify-center">
-                <span className="text-4xl">🌾</span>
-              </div>
-            </div>
-            <h1 className="text-5xl font-bold text-foreground mb-6">
+    <div className="min-h-screen bg-gradient-subtle">
+      <Navbar />
+      
+      <main className="container mx-auto px-4 py-8">
+        {/* Hero Section */}
+        <section className="text-center py-16 relative">
+          <div className="absolute inset-0 rounded-lg overflow-hidden opacity-20">
+            <img 
+              src={indianCowHero} 
+              alt="Indian dairy cow in pastoral setting"
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <div className="max-w-4xl mx-auto relative z-10">
+            <h1 className="text-5xl font-bold mb-6 bg-gradient-primary bg-clip-text text-transparent">
               Kalnadai AMR Portal
             </h1>
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Digital Livestock Monitoring & Antimicrobial Resistance Management System
-            </p>
-            <p className="text-lg text-muted-foreground mb-10">
-              Empowering farmers, veterinarians, and government officials with comprehensive 
-              livestock health management and compliance monitoring tools.
+              Empowering responsible antimicrobial use in livestock through digital monitoring, 
+              veterinary oversight, and government compliance tracking.
             </p>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Features Section */}
-      <section className="py-20 bg-card">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-foreground mb-4">
-              Comprehensive Livestock Management
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Monitor, track, and ensure compliance with antimicrobial usage across your livestock operations
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card className="text-center hover:shadow-elegant transition-shadow duration-300">
-              <CardHeader>
-                <div className="mx-auto w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                  <Users className="h-6 w-6 text-primary" />
-                </div>
-                <CardTitle>For Farmers</CardTitle>
+        {/* Features Grid */}
+        <section className="py-16">
+          <h2 className="text-3xl font-bold text-center mb-12">Platform Features</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <Card className="shadow-card transition-smooth hover:shadow-elegant relative overflow-hidden">
+              <div className="absolute inset-0 opacity-10">
+                <img src={indianFarm} alt="Indian farm" className="w-full h-full object-cover" />
+              </div>
+              <CardHeader className="relative z-10">
+                <Users className="h-12 w-12 text-primary mb-4" />
+                <CardTitle>Farmer Dashboard</CardTitle>
                 <CardDescription>
-                  Log antimicrobial usage, track withdrawal periods, and ensure food safety compliance
+                  Log antimicrobial usage, track withdrawal periods, and maintain compliance records
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <ul className="text-sm text-muted-foreground space-y-2">
-                  <li>• Easy medication logging</li>
-                  <li>• Automated withdrawal period alerts</li>
-                  <li>• Compliance status tracking</li>
-                  <li>• Photo documentation</li>
-                </ul>
-              </CardContent>
             </Card>
-
-            <Card className="text-center hover:shadow-elegant transition-shadow duration-300">
+            
+            <Card className="shadow-card transition-smooth hover:shadow-elegant">
               <CardHeader>
-                <div className="mx-auto w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center mb-4">
-                  <Stethoscope className="h-6 w-6 text-secondary" />
-                </div>
-                <CardTitle>For Veterinarians</CardTitle>
+                <Shield className="h-12 w-12 text-success mb-4" />
+                <CardTitle>Veterinary Oversight</CardTitle>
                 <CardDescription>
-                  Prescribe treatments, monitor usage patterns, and ensure responsible antimicrobial use
+                  Review prescriptions, approve treatments, and ensure proper veterinary guidance
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <ul className="text-sm text-muted-foreground space-y-2">
-                  <li>• Digital prescriptions</li>
-                  <li>• Usage pattern analysis</li>
-                  <li>• Treatment history tracking</li>
-                  <li>• Compliance monitoring</li>
-                </ul>
-              </CardContent>
             </Card>
-
-            <Card className="text-center hover:shadow-elegant transition-shadow duration-300">
-              <CardHeader>
-                <div className="mx-auto w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center mb-4">
-                  <Shield className="h-6 w-6 text-accent" />
-                </div>
-                <CardTitle>For Government</CardTitle>
+            
+            <Card className="shadow-card transition-smooth hover:shadow-elegant relative overflow-hidden">
+              <div className="absolute inset-0 opacity-10">
+                <img src={governmentBuilding} alt="Government building" className="w-full h-full object-cover" />
+              </div>
+              <CardHeader className="relative z-10">
+                <Globe className="h-12 w-12 text-sky mb-4" />
+                <CardTitle>Government Monitoring</CardTitle>
                 <CardDescription>
-                  Monitor compliance, analyze data, and ensure food safety standards across regions
+                  Track compliance rates, monitor usage patterns, and enforce regulations
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <ul className="text-sm text-muted-foreground space-y-2">
-                  <li>• Regional compliance tracking</li>
-                  <li>• Data analytics dashboard</li>
-                  <li>• Policy enforcement tools</li>
-                  <li>• Reporting system</li>
-                </ul>
-              </CardContent>
+            </Card>
+            
+            <Card className="shadow-card transition-smooth hover:shadow-elegant">
+              <CardHeader>
+                <AlertTriangle className="h-12 w-12 text-warning mb-4" />
+                <CardTitle>Real-time Alerts</CardTitle>
+                <CardDescription>
+                  Get notified about withdrawal periods, compliance issues, and regulatory updates
+                </CardDescription>
+              </CardHeader>
+            </Card>
+            
+            <Card className="shadow-card transition-smooth hover:shadow-elegant">
+              <CardHeader>
+                <TrendingUp className="h-12 w-12 text-accent mb-4" />
+                <CardTitle>Data Analytics</CardTitle>
+                <CardDescription>
+                  Analyze usage trends, compliance rates, and regional patterns for better decisions
+                </CardDescription>
+              </CardHeader>
+            </Card>
+            
+            <Card className="shadow-card transition-smooth hover:shadow-elegant">
+              <CardHeader>
+                <CheckCircle className="h-12 w-12 text-primary mb-4" />
+                <CardTitle>MRL Compliance</CardTitle>
+                <CardDescription>
+                  Ensure Maximum Residue Limits compliance and maintain food safety standards
+                </CardDescription>
+              </CardHeader>
             </Card>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Key Features */}
-      <section className="py-20">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-foreground mb-4">
-              Key Features
-            </h2>
-            <p className="text-xl text-muted-foreground">
-              Everything you need for responsible antimicrobial management
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="text-center p-6">
-              <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-                <Database className="h-8 w-8 text-primary" />
-              </div>
-              <h3 className="text-lg font-semibold mb-2">Data Management</h3>
-              <p className="text-sm text-muted-foreground">
-                Comprehensive livestock and treatment data storage
-              </p>
-            </div>
-
-            <div className="text-center p-6">
-              <div className="mx-auto w-16 h-16 bg-secondary/10 rounded-full flex items-center justify-center mb-4">
-                <AlertTriangle className="h-8 w-8 text-secondary" />
-              </div>
-              <h3 className="text-lg font-semibold mb-2">Smart Alerts</h3>
-              <p className="text-sm text-muted-foreground">
-                Automated withdrawal period and compliance notifications
-              </p>
-            </div>
-
-            <div className="text-center p-6">
-              <div className="mx-auto w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mb-4">
-                <Shield className="h-8 w-8 text-accent" />
-              </div>
-              <h3 className="text-lg font-semibold mb-2">Compliance</h3>
-              <p className="text-sm text-muted-foreground">
-                MRL limits and regulatory compliance monitoring
-              </p>
-            </div>
-
-            <div className="text-center p-6">
-              <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-                <BookOpen className="h-8 w-8 text-primary" />
-              </div>
-              <h3 className="text-lg font-semibold mb-2">Documentation</h3>
-              <p className="text-sm text-muted-foreground">
-                Complete treatment history and prescription records
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Statistics Section */}
-      <section className="py-20 bg-primary/5">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-foreground mb-4">
-              Did You Know?
-            </h2>
+        {/* Statistics / Did You Know Section */}
+        <section className="py-16 bg-primary/5 rounded-lg">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-foreground mb-4">Did You Know?</h2>
             <p className="text-xl text-muted-foreground">
               Key statistics about antimicrobial resistance in livestock
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card className="text-center hover:shadow-elegant transition-shadow duration-300">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <Card className="text-center shadow-card hover:shadow-elegant transition-smooth">
               <CardContent className="pt-6">
                 <div className="text-4xl font-bold text-primary mb-2">Top 5</div>
                 <p className="text-foreground font-medium mb-2">Global Consumer</p>
@@ -184,19 +125,19 @@ const Homepage = () => {
               </CardContent>
             </Card>
 
-            <Card className="text-center hover:shadow-elegant transition-shadow duration-300">
+            <Card className="text-center shadow-card hover:shadow-elegant transition-smooth">
               <CardContent className="pt-6">
-                <div className="text-4xl font-bold text-secondary mb-2">60%</div>
-                <p className="text-foreground font-medium mb-2">Unsupervised Usage</p>
+                <div className="text-4xl font-bold text-warning mb-2">60%</div>
+                <p className="text-foreground font-medium mb-2">Without Oversight</p>
                 <p className="text-sm text-muted-foreground">
                   Up to 60% of antimicrobials in livestock are used without veterinary oversight.
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="text-center hover:shadow-elegant transition-shadow duration-300">
+            <Card className="text-center shadow-card hover:shadow-elegant transition-smooth">
               <CardContent className="pt-6">
-                <div className="text-4xl font-bold text-accent mb-2">10M</div>
+                <div className="text-4xl font-bold text-danger mb-2">10M</div>
                 <p className="text-foreground font-medium mb-2">Deaths by 2050</p>
                 <p className="text-sm text-muted-foreground">
                   Antimicrobial resistance could cause 10 million deaths annually by 2050 if not controlled.
@@ -204,115 +145,74 @@ const Homepage = () => {
               </CardContent>
             </Card>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Information Section */}
-      <section className="py-20">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-foreground mb-4">
-              Understanding AMR
-            </h2>
+        {/* Information Section */}
+        <section className="py-16">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-foreground mb-4">Understanding AMR</h2>
             <p className="text-xl text-muted-foreground">
               Essential information about antimicrobial resistance and monitoring
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-3 gap-8">
-            <Card className="hover:shadow-elegant transition-shadow duration-300">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <Card className="shadow-card hover:shadow-elegant transition-smooth">
               <CardHeader>
                 <CardTitle className="text-xl">What is AMR?</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground leading-relaxed">
-                  Antimicrobial Resistance (AMR) occurs when bacteria, viruses, fungi, and parasites evolve to resist the drugs designed to kill them. This makes infections harder to treat and increases the risk of disease spread, severe illness, and death.
+                  Antimicrobial Resistance occurs when bacteria, viruses, and parasites evolve to resist drugs. 
+                  This makes infections harder to treat and increases risks.
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="hover:shadow-elegant transition-shadow duration-300">
+            <Card className="shadow-card hover:shadow-elegant transition-smooth">
               <CardHeader>
-                <CardTitle className="text-xl">Why Monitor AMU?</CardTitle>
+                <CardTitle className="text-xl">Why monitoring AMU matters?</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground leading-relaxed">
-                  Monitoring Antimicrobial Usage (AMU) in livestock is crucial for preventing the development of resistant bacteria that can transfer to humans through the food chain, ensuring food safety and protecting public health.
+                  Monitoring prevents resistant bacteria development that can transfer to humans through 
+                  food chain, ensuring food safety and public health.
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="hover:shadow-elegant transition-shadow duration-300">
+            <Card className="shadow-card hover:shadow-elegant transition-smooth">
               <CardHeader>
-                <CardTitle className="text-xl">What are MRLs?</CardTitle>
+                <CardTitle className="text-xl">What are Maximum Residue Limits (MRLs)?</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground leading-relaxed">
-                  Maximum Residue Limits (MRLs) are the maximum concentrations of antimicrobial residues that are legally permitted in food products. They ensure that food consumption remains safe for human health.
+                  MRLs are maximum concentrations of antimicrobial residues legally permitted in food products 
+                  to ensure human consumption safety.
                 </p>
               </CardContent>
             </Card>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Footer */}
-      <footer className="bg-card border-t border-border py-12">
-        <div className="container mx-auto px-6">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="gradient-primary w-8 h-8 rounded-lg flex items-center justify-center">
-                  <span className="text-primary-foreground font-bold">🌾</span>
-                </div>
-                <span className="font-bold text-lg">Kalnadai</span>
+        {/* Footer */}
+        <footer className="bg-card border-t border-border py-12 rounded-lg mt-16">
+          <div className="text-center">
+            <div className="flex items-center justify-center space-x-3 mb-4">
+              <div className="gradient-primary w-12 h-12 rounded-lg flex items-center justify-center">
+                <span className="text-2xl">🌾</span>
               </div>
-              <p className="text-sm text-muted-foreground">
-                Digital Livestock Monitoring & AMR Management System
-              </p>
+              <span className="font-bold text-2xl">Kalnadai AMR Portal</span>
             </div>
-
-            <div>
-              <h4 className="font-semibold mb-3">Platform</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><Link to="/login" className="hover:text-foreground">Login</Link></li>
-                <li><Link to="/about" className="hover:text-foreground">About</Link></li>
-                <li>
-                  <a 
-                    href="https://www.youtube.com/watch?v=NVIe8Bj78rE" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="hover:text-foreground"
-                  >
-                    Tutorial
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-3">Compliance</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><Link to="/mrl" className="hover:text-foreground">MRL Compliance</Link></li>
-                <li><Link to="/banned" className="hover:text-foreground">Banned Antimicrobials</Link></li>
-                <li><Link to="/withdrawal" className="hover:text-foreground">Withdrawal Periods</Link></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-3">Resources</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><Link to="/docs" className="hover:text-foreground">Documentation</Link></li>
-                <li><Link to="/about" className="hover:text-foreground">Support</Link></li>
-              </ul>
-            </div>
+            <p className="text-muted-foreground mb-4">
+              Digital Livestock Monitoring & Antimicrobial Resistance Management System
+            </p>
+            <p className="text-sm text-muted-foreground">
+              &copy; 2024 Kalnadai AMR Portal. All rights reserved.
+            </p>
           </div>
-
-          <div className="border-t border-border mt-8 pt-8 text-center text-sm text-muted-foreground">
-            <p>&copy; 2024 Kalnadai AMR Portal. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+        </footer>
+      </main>
     </div>
   );
 };

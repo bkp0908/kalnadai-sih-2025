@@ -80,12 +80,12 @@ export const FileUpload: React.FC<FileUploadProps> = ({
         type: file.type
       }]);
 
-      // Call the callback
+      // Call the callback with file URL
       onFileUploaded?.(fileUrl, uploadType);
 
       toast({
         title: 'File uploaded successfully',
-        description: `${file.name} has been uploaded`,
+        description: `${file.name} has been uploaded and saved`,
         variant: 'default'
       });
 

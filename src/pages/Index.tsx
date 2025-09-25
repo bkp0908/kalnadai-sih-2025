@@ -25,7 +25,7 @@ const Index = () => {
   }
 
   if (!user || !profile) {
-    return <LoginPage language={language} setLanguage={setLanguage} />;
+    return <LoginPage />;
   }
 
   const renderDashboard = () => {

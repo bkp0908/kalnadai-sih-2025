@@ -13,6 +13,7 @@ import WithdrawalPage from "./pages/WithdrawalPage";
 import AboutPage from "./pages/AboutPage";
 import NotFound from "./pages/NotFound";
 import Navbar from "@/components/Navbar";
+import { SimplifiedGovernmentDashboard } from "@/components/SimplifiedGovernmentDashboard";
 
 const queryClient = new QueryClient();
 
@@ -65,6 +66,7 @@ const App = () => (
             {/* App routes without navbar */}
             <Route path="/login" element={<Index />} />
             <Route path="/dashboard" element={<Index />} />
+            <Route path="/simple-government" element={<SimplifiedGovernmentDashboard language="english" />} />
             
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
