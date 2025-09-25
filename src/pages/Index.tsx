@@ -54,11 +54,13 @@ const Index = () => {
               onClick={() => navigate('/')}
               className="flex items-center space-x-4 hover:opacity-80 transition-opacity"
             >
-              <img 
-                src="/kalnadai-logo.png" 
-                alt="Kalnadai Logo" 
-                className="w-10 h-10 rounded-lg"
-              />
+              <div className="w-14 h-14 bg-white rounded-xl shadow-md flex items-center justify-center p-2">
+                <img 
+                  src="/kalnadai-logo.png" 
+                  alt="Kalnadai Logo" 
+                  className="w-full h-full object-contain"
+                />
+              </div>
               <div className="text-left">
                 <h1 className="text-2xl font-bold text-foreground">Kalnadai Portal</h1>
                 <p className="text-muted-foreground text-sm">Digital Livestock Monitoring</p>

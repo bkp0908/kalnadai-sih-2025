@@ -48,12 +48,29 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     setUploading(true);
 
     try {
+      // Check if user is authenticated
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: 'Authentication required',
+          description: 'Please log in to upload files',
+          variant: 'destructive'
+        });
+        return;
+      }
+
       // Create a unique filename
       const fileExt = file.name.split('.').pop();
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
       const filePath = `uploads/${fileName}`;
 
-      console.log('Starting file upload:', { fileName, filePath, fileSize: file.size, fileType: file.type });
+      console.log('Starting file upload:', { 
+        fileName, 
+        filePath, 
+        fileSize: file.size, 
+        fileType: file.type,
+        userId: user.id 
+      });
 
       // Upload to Supabase Storage
       const { data, error } = await supabase.storage
@@ -64,7 +81,24 @@ export const FileUpload: React.FC<FileUploadProps> = ({
         });
 
       if (error) {
-        console.error('Upload error:', error);
+        console.error('Upload error details:', {
+          message: error.message,
+          name: error.name
+        });
+        
+        if (error.message.includes('row-level security')) {
+          toast({
+            title: 'Upload Permission Error',
+            description: 'Unable to upload file due to security restrictions. Please contact support.',
+            variant: 'destructive'
+          });
+        } else {
+          toast({
+            title: 'Upload failed',
+            description: `Error: ${error.message}`,
+            variant: 'destructive'
+          });
+        }
         throw error;
       }
 
@@ -98,11 +132,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 
     } catch (error) {
       console.error('Upload error:', error);
-      toast({
-        title: 'Upload failed',
-        description: 'Failed to upload file. Please try again.',
-        variant: 'destructive'
-      });
+      // Error toast is already shown above for specific cases
     } finally {
       setUploading(false);
       // Reset the input
