@@ -178,6 +178,13 @@ export const PhoneAuth: React.FC<PhoneAuthProps> = ({ onSuccess }) => {
         
         <Card className="shadow-elegant">
           <CardHeader className="bg-gradient-primary text-primary-foreground rounded-t-lg text-center">
+            <div className="flex items-center justify-center mb-4">
+              <img 
+                src="/src/assets/kalnadai-logo.png" 
+                alt="Kalnadai Logo" 
+                className="h-16 w-auto"
+              />
+            </div>
             <CardTitle className="text-2xl">Kalnadai AMR Portal</CardTitle>
             <CardDescription className="text-primary-foreground/80">
               Sign in to access your dashboard

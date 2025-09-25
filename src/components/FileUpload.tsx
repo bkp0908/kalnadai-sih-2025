@@ -53,6 +53,8 @@ export const FileUpload: React.FC<FileUploadProps> = ({
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
       const filePath = `uploads/${fileName}`;
 
+      console.log('Starting file upload:', { fileName, filePath, fileSize: file.size, fileType: file.type });
+
       // Upload to Supabase Storage
       const { data, error } = await supabase.storage
         .from('Farmers Dashboard')
@@ -62,8 +64,11 @@ export const FileUpload: React.FC<FileUploadProps> = ({
         });
 
       if (error) {
+        console.error('Upload error:', error);
         throw error;
       }
+
+      console.log('Upload successful:', data);
 
       // Get the public URL
       const { data: urlData } = supabase.storage
@@ -72,6 +77,8 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 
       const fileUrl = urlData.publicUrl;
       const uploadType = file.type.startsWith('image/') ? 'photo' : 'prescription';
+
+      console.log('File URL generated:', { fileUrl, uploadType });
 
       // Add to uploaded files list
       setUploadedFiles(prev => [...prev, {
@@ -85,7 +92,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 
       toast({
         title: 'File uploaded successfully',
-        description: `${file.name} has been uploaded and saved`,
+        description: `${file.name} has been uploaded and is ready to be saved with your entry`,
         variant: 'default'
       });
 

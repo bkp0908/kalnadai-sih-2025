@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import Navbar from '@/components/Navbar';
 import { CheckCircle, AlertTriangle, Shield, Users, TrendingUp, Globe } from 'lucide-react';
-import indianCowHero from '@/assets/indian-cow-hero.jpg';
+import indianCowPastoral from '@/assets/indian-cow-pastoral.jpg';
 import indianFarm from '@/assets/indian-farm.jpg';
 import governmentBuilding from '@/assets/government-building.jpg';
 
@@ -17,7 +17,7 @@ export const Homepage: React.FC = () => {
         <section className="text-center py-16 relative">
           <div className="absolute inset-0 rounded-lg overflow-hidden opacity-20">
             <img 
-              src={indianCowHero} 
+              src={indianCowPastoral} 
               alt="Indian dairy cow in pastoral setting"
               className="w-full h-full object-cover"
             />
@@ -199,9 +199,11 @@ export const Homepage: React.FC = () => {
         <footer className="bg-card border-t border-border py-12 rounded-lg mt-16">
           <div className="text-center">
             <div className="flex items-center justify-center space-x-3 mb-4">
-              <div className="gradient-primary w-12 h-12 rounded-lg flex items-center justify-center">
-                <span className="text-2xl">🌾</span>
-              </div>
+              <img 
+                src="/src/assets/kalnadai-logo.png" 
+                alt="Kalnadai Logo" 
+                className="h-12 w-auto"
+              />
               <span className="font-bold text-2xl">Kalnadai AMR Portal</span>
             </div>
             <p className="text-muted-foreground mb-4">
