@@ -47,9 +47,11 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           {/* Left side - Logo */}
           <Link to="/" className="flex items-center space-x-3">
-            <div className="gradient-primary w-8 h-8 rounded-lg flex items-center justify-center">
-              <span className="text-primary-foreground font-bold">🌾</span>
-            </div>
+            <img 
+              src="/kalnadai-logo.png" 
+              alt="Kalnadai Logo" 
+              className="w-8 h-8 rounded-lg"
+            />
             <span className="font-bold text-xl text-foreground">Kalnadai AMR Portal</span>
           </Link>
 

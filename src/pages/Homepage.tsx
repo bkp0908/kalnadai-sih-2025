@@ -1,7 +1,6 @@
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import Navbar from '@/components/Navbar';
 import { CheckCircle, AlertTriangle, Shield, Users, TrendingUp, Globe } from 'lucide-react';
 import indianCowPastoral from '@/assets/indian-cow-pastoral.jpg';
 import indianFarm from '@/assets/indian-farm.jpg';
@@ -10,7 +9,6 @@ import governmentBuilding from '@/assets/government-building.jpg';
 export const Homepage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-subtle">
-      <Navbar />
       
       <main className="container mx-auto px-4 py-8">
         {/* Hero Section */}

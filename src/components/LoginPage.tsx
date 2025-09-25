@@ -6,8 +6,8 @@ export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
 
   const handleAuthSuccess = () => {
-    // Redirect will be handled by AuthProvider
-    navigate('/');
+    // Redirect to dashboard after successful login
+    navigate('/dashboard');
   };
 
   return (

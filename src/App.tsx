@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/components/AuthProvider";
 import Index from "./pages/Index";
 import Homepage from "./pages/Homepage";
+import { LoginPage } from "@/components/LoginPage";
 import DocsPage from "./pages/DocsPage";
 import MRLPage from "./pages/MRLPage";
 import BannedPage from "./pages/BannedPage";
@@ -26,7 +27,12 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             {/* Public routes with navbar */}
-            <Route path="/" element={<Homepage />} />
+            <Route path="/" element={
+              <div>
+                <Navbar />
+                <Homepage />
+              </div>
+            } />
             <Route path="/docs" element={
               <div>
                 <Navbar />
@@ -59,7 +65,7 @@ const App = () => (
             } />
             
             {/* App routes without navbar */}
-            <Route path="/login" element={<Index />} />
+            <Route path="/login" element={<LoginPage />} />
             <Route path="/dashboard" element={<Index />} />
             <Route path="/simple-government" element={<SimplifiedGovernmentDashboard language="english" />} />
             

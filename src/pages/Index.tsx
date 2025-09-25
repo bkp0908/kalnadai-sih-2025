@@ -4,15 +4,17 @@ import { LoginPage } from "@/components/LoginPage";
 import { KalnadaiFarmerDashboard } from "@/components/KalnadaiFarmerDashboard";
 import { KalnadaiVeterinarianDashboard } from "@/components/KalnadaiVeterinarianDashboard";
 import { KalnadaiGovernmentDashboard } from "@/components/KalnadaiGovernmentDashboard";
-import { User, LogOut, Languages } from "lucide-react";
+import { User, LogOut, Languages, Home } from "lucide-react";
 import { NotificationBell } from "@/components/NotificationBell";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
   const [language, setLanguage] = useState<'english' | 'tamil'>('tamil');
   const [roleOverride, setRoleOverride] = useState<'farmer' | 'veterinarian' | 'government' | null>(null);
   const { user, profile, loading, signOut } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (profile?.role === 'farmer') setLanguage('tamil');
@@ -48,17 +50,33 @@ const Index = () => {
       <header className="bg-card border-b border-border shadow-card">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="gradient-primary w-10 h-10 rounded-lg flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-lg">🌾</span>
-              </div>
-              <div>
+            <button
+              onClick={() => navigate('/')}
+              className="flex items-center space-x-4 hover:opacity-80 transition-opacity"
+            >
+              <img 
+                src="/kalnadai-logo.png" 
+                alt="Kalnadai Logo" 
+                className="w-10 h-10 rounded-lg"
+              />
+              <div className="text-left">
                 <h1 className="text-2xl font-bold text-foreground">Kalnadai Portal</h1>
                 <p className="text-muted-foreground text-sm">Digital Livestock Monitoring</p>
               </div>
-            </div>
+            </button>
             
             <div className="flex items-center space-x-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate('/')}
+                className="gap-2"
+                title="Go to Homepage"
+              >
+                <Home className="h-4 w-4" />
+                Home
+              </Button>
+
               <Button
                 variant="ghost"
                 size="sm"
