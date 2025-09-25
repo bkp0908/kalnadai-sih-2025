@@ -26,12 +26,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             {/* Public routes with navbar */}
-            <Route path="/" element={
-              <div>
-                <Navbar />
-                <Homepage />
-              </div>
-            } />
+            <Route path="/" element={<Homepage />} />
             <Route path="/docs" element={
               <div>
                 <Navbar />

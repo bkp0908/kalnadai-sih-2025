@@ -180,7 +180,7 @@ export const PhoneAuth: React.FC<PhoneAuthProps> = ({ onSuccess }) => {
           <CardHeader className="bg-gradient-primary text-primary-foreground rounded-t-lg text-center">
             <div className="flex items-center justify-center mb-4">
               <img 
-                src="/src/assets/kalnadai-logo.png" 
+                src="/kalnadai-logo.png" 
                 alt="Kalnadai Logo" 
                 className="h-16 w-auto"
               />

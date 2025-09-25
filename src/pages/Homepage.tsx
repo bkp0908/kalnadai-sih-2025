@@ -200,7 +200,7 @@ export const Homepage: React.FC = () => {
           <div className="text-center">
             <div className="flex items-center justify-center space-x-3 mb-4">
               <img 
-                src="/src/assets/kalnadai-logo.png" 
+                src="/kalnadai-logo.png" 
                 alt="Kalnadai Logo" 
                 className="h-12 w-auto"
               />
