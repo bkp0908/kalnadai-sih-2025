@@ -187,7 +187,7 @@ export const PhoneAuth: React.FC<PhoneAuthProps> = ({ onSuccess }) => {
                 />
               </div>
             </div>
-            <CardTitle className="text-3xl font-bold">Kalnadai AMR Portal</CardTitle>
+            <CardTitle className="text-3xl font-bold text-black">Kalnadai AMR Portal</CardTitle>
             <CardDescription className="text-black text-lg">
               Sign in to access your dashboard
             </CardDescription>
