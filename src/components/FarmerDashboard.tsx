@@ -8,7 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Camera, Upload, Plus, Calendar, AlertTriangle, CheckCircle, Clock } from "lucide-react";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { Camera, Upload, Plus, Calendar, AlertTriangle, CheckCircle, Clock, Users, User } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface FarmerDashboardProps {
@@ -17,13 +18,17 @@ interface FarmerDashboardProps {
 }
 
 export const FarmerDashboard = ({ userName, farmName }: FarmerDashboardProps) => {
+  const [treatmentMode, setTreatmentMode] = useState<"individual" | "batch">("individual");
   const [formData, setFormData] = useState({
     animalType: "",
     animalId: "",
+    batchId: "",
+    numberOfAnimals: "",
     drugName: "",
     dosage: "",
     frequency: "",
     duration: "",
+    administrationMethod: "",
     reason: "",
     veterinarianId: "",
     notes: ""
@@ -65,20 +70,38 @@ export const FarmerDashboard = ({ userName, farmName }: FarmerDashboardProps) =>
 
   const { toast } = useToast();
 
+  // Set default mode based on animal type
+  const handleAnimalTypeChange = (value: string) => {
+    setFormData(prev => ({...prev, animalType: value}));
+    
+    // Set default modes
+    const largeAnimals = ["cattle", "buffalo", "pig", "goat", "sheep"];
+    const smallAnimals = ["poultry", "chicken", "duck", "rabbit"];
+    
+    if (largeAnimals.includes(value)) {
+      setTreatmentMode("individual");
+    } else if (smallAnimals.includes(value)) {
+      setTreatmentMode("batch");
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     toast({
       title: "Entry Submitted",
-      description: "Antimicrobial usage has been recorded successfully.",
+      description: `Antimicrobial usage has been recorded successfully for ${treatmentMode === "batch" ? "batch treatment" : "individual animal"}.`,
     });
     // Reset form
     setFormData({
       animalType: "",
       animalId: "",
+      batchId: "",
+      numberOfAnimals: "",
       drugName: "",
       dosage: "",
       frequency: "",
       duration: "",
+      administrationMethod: "",
       reason: "",
       veterinarianId: "",
       notes: ""
@@ -133,34 +156,102 @@ export const FarmerDashboard = ({ userName, farmName }: FarmerDashboardProps) =>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Treatment Mode Selection */}
+                <div className="space-y-3">
+                  <Label>Treatment Mode</Label>
+                  <ToggleGroup 
+                    type="single" 
+                    value={treatmentMode} 
+                    onValueChange={(value) => value && setTreatmentMode(value as "individual" | "batch")}
+                    className="justify-start"
+                  >
+                    <ToggleGroupItem value="individual" className="flex items-center space-x-2">
+                      <User className="h-4 w-4" />
+                      <span>Individual Animal</span>
+                    </ToggleGroupItem>
+                    <ToggleGroupItem value="batch" className="flex items-center space-x-2">
+                      <Users className="h-4 w-4" />
+                      <span>Batch / Group</span>
+                    </ToggleGroupItem>
+                  </ToggleGroup>
+                  <p className="text-sm text-muted-foreground">
+                    {treatmentMode === "individual" 
+                      ? "Record treatment for a single animal with specific ID" 
+                      : "Record treatment for a group, pen, or flock of animals"}
+                  </p>
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Animal Type - Always visible */}
                   <div className="space-y-2">
                     <Label htmlFor="animalType">Animal Type</Label>
-                    <Select value={formData.animalType} onValueChange={(value) => setFormData(prev => ({...prev, animalType: value}))}>
+                    <Select value={formData.animalType} onValueChange={handleAnimalTypeChange}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select animal type" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="cattle">Cattle</SelectItem>
-                        <SelectItem value="buffalo">Buffalo</SelectItem>
-                        <SelectItem value="goat">Goat</SelectItem>
-                        <SelectItem value="sheep">Sheep</SelectItem>
-                        <SelectItem value="pig">Pig</SelectItem>
-                        <SelectItem value="poultry">Poultry</SelectItem>
+                        <SelectItem value="cattle">Cattle (மாடு)</SelectItem>
+                        <SelectItem value="buffalo">Buffalo (எருமை)</SelectItem>
+                        <SelectItem value="goat">Goat (ஆடு)</SelectItem>
+                        <SelectItem value="sheep">Sheep (செம்மறி)</SelectItem>
+                        <SelectItem value="pig">Pig (பன்றி)</SelectItem>
+                        <SelectItem value="chicken">Chicken (கோழி)</SelectItem>
+                        <SelectItem value="duck">Duck (வாத்து)</SelectItem>
+                        <SelectItem value="rabbit">Rabbit (முயல்)</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="animalId">Animal ID/Tag</Label>
-                    <Input
-                      id="animalId"
-                      placeholder="e.g., A123, B456"
-                      value={formData.animalId}
-                      onChange={(e) => setFormData(prev => ({...prev, animalId: e.target.value}))}
-                    />
-                  </div>
+                  {/* Animal ID - Only for Individual Mode */}
+                  {treatmentMode === "individual" && (
+                    <div className="space-y-2">
+                      <Label htmlFor="animalId">Animal ID/Tag</Label>
+                      <Input
+                        id="animalId"
+                        placeholder="e.g., A123, B456"
+                        value={formData.animalId}
+                        onChange={(e) => setFormData(prev => ({...prev, animalId: e.target.value}))}
+                      />
+                    </div>
+                  )}
 
+                  {/* Batch Selection - Only for Batch Mode */}
+                  {treatmentMode === "batch" && (
+                    <>
+                      <div className="space-y-2">
+                        <Label htmlFor="batchId">Batch / Pen / Group ID</Label>
+                        <Select value={formData.batchId} onValueChange={(value) => setFormData(prev => ({...prev, batchId: value}))}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select batch/pen" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="pen-1">Pen 1</SelectItem>
+                            <SelectItem value="pen-2">Pen 2</SelectItem>
+                            <SelectItem value="pen-3">Pen 3</SelectItem>
+                            <SelectItem value="barn-a">Barn A</SelectItem>
+                            <SelectItem value="barn-b">Barn B</SelectItem>
+                            <SelectItem value="flock-1">Flock 1</SelectItem>
+                            <SelectItem value="flock-2">Flock 2</SelectItem>
+                            <SelectItem value="group-young">Young Group</SelectItem>
+                            <SelectItem value="group-adult">Adult Group</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="numberOfAnimals">Number of Animals (Optional)</Label>
+                        <Input
+                          id="numberOfAnimals"
+                          type="number"
+                          placeholder="e.g., 50"
+                          value={formData.numberOfAnimals}
+                          onChange={(e) => setFormData(prev => ({...prev, numberOfAnimals: e.target.value}))}
+                        />
+                      </div>
+                    </>
+                  )}
+
+                  {/* Drug Name - Tamil names included */}
                   <div className="space-y-2">
                     <Label htmlFor="drugName">Drug Name</Label>
                     <Select value={formData.drugName} onValueChange={(value) => setFormData(prev => ({...prev, drugName: value}))}>
@@ -168,18 +259,26 @@ export const FarmerDashboard = ({ userName, farmName }: FarmerDashboardProps) =>
                         <SelectValue placeholder="Select antimicrobial" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="amoxicillin">Amoxicillin</SelectItem>
-                        <SelectItem value="oxytetracycline">Oxytetracycline</SelectItem>
-                        <SelectItem value="penicillin">Penicillin</SelectItem>
-                        <SelectItem value="streptomycin">Streptomycin</SelectItem>
-                        <SelectItem value="enrofloxacin">Enrofloxacin</SelectItem>
-                        <SelectItem value="tylosin">Tylosin</SelectItem>
+                        <SelectItem value="amoxicillin">Amoxicillin - அமோக்சிசில்லின் (Amoxil, Amoxycillin)</SelectItem>
+                        <SelectItem value="oxytetracycline">Oxytetracycline - ஆக்ஸிடெட்ராசைசைலின் (Terramycin, Oxytet)</SelectItem>
+                        <SelectItem value="enrofloxacin">Enrofloxacin - என்ரோஃப்ளாக்சாசின் (Baytril, Enrocin)</SelectItem>
+                        <SelectItem value="tylosin">Tylosin - டைலோசின் (Tylan, Tylosin)</SelectItem>
+                        <SelectItem value="chloramphenicol">Chloramphenicol - குளோராம்பெனிகால் (Chloromycetin)</SelectItem>
+                        <SelectItem value="doxycycline">Doxycycline - டாக்சிசைக்கிளின் (Vibramycin)</SelectItem>
+                        <SelectItem value="gentamicin">Gentamicin - ஜென்டாமிசின் (Gentamicin)</SelectItem>
+                        <SelectItem value="ciprofloxacin">Ciprofloxacin - சிப்ரோஃப்ளாக்சாசின் (Cipro, Cifran)</SelectItem>
+                        <SelectItem value="sulfachlorpyridazine">Sulfachlorpyridazine - சல்பாச்லோர்பிரிடாசின் (Vetisulid)</SelectItem>
+                        <SelectItem value="colistin">Colistin - கொலிஸ்டின் (Coly-Mycin M)</SelectItem>
+                        <SelectItem value="amikacin">Amikacin - அமிகாசின் (Amikacin)</SelectItem>
+                        <SelectItem value="trimethoprim-sulphamethoxazole">Trimethoprim-Sulphamethoxazole - டிரைமெதோபிரிம்-சல்பாமெதோக்சாசோலே (Bactrim, Septrin)</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="dosage">Dosage (mg/kg)</Label>
+                    <Label htmlFor="dosage">
+                      Dosage {treatmentMode === "batch" ? "(per animal)" : ""} (mg/kg)
+                    </Label>
                     <Input
                       id="dosage"
                       placeholder="e.g., 10mg/kg"
@@ -195,11 +294,11 @@ export const FarmerDashboard = ({ userName, farmName }: FarmerDashboardProps) =>
                         <SelectValue placeholder="Select frequency" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="once-daily">Once Daily</SelectItem>
-                        <SelectItem value="twice-daily">Twice Daily</SelectItem>
-                        <SelectItem value="thrice-daily">Three Times Daily</SelectItem>
-                        <SelectItem value="weekly">Weekly</SelectItem>
-                        <SelectItem value="as-needed">As Needed</SelectItem>
+                        <SelectItem value="once-daily">Once Daily (நாளொன்றுக்கு ஒருமுறை)</SelectItem>
+                        <SelectItem value="twice-daily">Twice Daily (நாளொன்றுக்கு இருமுறை)</SelectItem>
+                        <SelectItem value="thrice-daily">Three Times Daily (நாளொன்றுக்கு மூன்றுமுறை)</SelectItem>
+                        <SelectItem value="weekly">Weekly (வாரத்திற்கு ஒருமுறை)</SelectItem>
+                        <SelectItem value="as-needed">As Needed (தேவையானபோது)</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -214,9 +313,25 @@ export const FarmerDashboard = ({ userName, farmName }: FarmerDashboardProps) =>
                       onChange={(e) => setFormData(prev => ({...prev, duration: e.target.value}))}
                     />
                   </div>
-                </div>
 
-                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="administrationMethod">Administration Method</Label>
+                    <Select value={formData.administrationMethod} onValueChange={(value) => setFormData(prev => ({...prev, administrationMethod: value}))}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select method" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="oral">Oral (வாய்வழி)</SelectItem>
+                        <SelectItem value="injection-im">Injection - Intramuscular (தசையினுள் ஊசி)</SelectItem>
+                        <SelectItem value="injection-iv">Injection - Intravenous (நரம்பினுள் ஊசி)</SelectItem>
+                        <SelectItem value="injection-sc">Injection - Subcutaneous (தோலடியில் ஊசி)</SelectItem>
+                        <SelectItem value="topical">Topical (மேற்பூச்சு)</SelectItem>
+                        <SelectItem value="feed-mix">Mixed in Feed (உணவில் கலந்து)</SelectItem>
+                        <SelectItem value="water">In Drinking Water (குடிநீரில்)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
                   <div className="space-y-2">
                     <Label htmlFor="reason">Treatment Reason</Label>
                     <Select value={formData.reason} onValueChange={(value) => setFormData(prev => ({...prev, reason: value}))}>
@@ -224,16 +339,19 @@ export const FarmerDashboard = ({ userName, farmName }: FarmerDashboardProps) =>
                         <SelectValue placeholder="Select treatment reason" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="respiratory-infection">Respiratory Infection</SelectItem>
-                        <SelectItem value="mastitis">Mastitis</SelectItem>
-                        <SelectItem value="digestive-disorder">Digestive Disorder</SelectItem>
-                        <SelectItem value="wound-infection">Wound Infection</SelectItem>
-                        <SelectItem value="preventive">Preventive Treatment</SelectItem>
-                        <SelectItem value="other">Other</SelectItem>
+                        <SelectItem value="respiratory-infection">Respiratory Infection (சுவாச தொற்று)</SelectItem>
+                        <SelectItem value="mastitis">Mastitis (மடி அழற்சி)</SelectItem>
+                        <SelectItem value="digestive-disorder">Digestive Disorder (செரிமான கோளாறு)</SelectItem>
+                        <SelectItem value="wound-infection">Wound Infection (காயத் தொற்று)</SelectItem>
+                        <SelectItem value="fever">Fever (காய்ச்சல்)</SelectItem>
+                        <SelectItem value="preventive">Preventive Treatment (தடுப்பு சிகிச்சை)</SelectItem>
+                        <SelectItem value="other">Other (மற்றவை)</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
+                </div>
 
+                <div className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="veterinarianId">Veterinarian ID (Optional)</Label>
                     <Input
@@ -253,6 +371,17 @@ export const FarmerDashboard = ({ userName, farmName }: FarmerDashboardProps) =>
                       onChange={(e) => setFormData(prev => ({...prev, notes: e.target.value}))}
                     />
                   </div>
+
+                  {treatmentMode === "batch" && formData.numberOfAnimals && (
+                    <div className="p-4 bg-muted rounded-lg">
+                      <Label className="text-sm font-medium">Estimated Total Medicine Quantity</Label>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        {formData.dosage && formData.numberOfAnimals 
+                          ? `Approximately ${parseFloat(formData.numberOfAnimals) * (parseFloat(formData.dosage.replace(/[^0-9.]/g, '')) || 0)} mg total (based on ${formData.dosage} per animal × ${formData.numberOfAnimals} animals)`
+                          : "Enter dosage and number of animals to see estimate"}
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-4">
@@ -267,7 +396,7 @@ export const FarmerDashboard = ({ userName, farmName }: FarmerDashboardProps) =>
                 </div>
 
                 <Button type="submit" className="w-full gradient-primary">
-                  Submit Record
+                  Submit Record - {treatmentMode === "batch" ? "Batch Treatment" : "Individual Animal"}
                 </Button>
               </form>
             </CardContent>
