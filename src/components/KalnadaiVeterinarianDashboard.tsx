@@ -109,23 +109,61 @@ export const KalnadaiVeterinarianDashboard: React.FC<Props> = ({ language }) => 
   const handleApproval = async (entryId: number, approved: boolean) => {
     setLoading(true);
     
-    const updates = {
-      VetApproved: approved ? 'Yes' : 'Rejected',
-      WithdrawalStatus: approved ? 'In Withdrawal' : 'Non-Compliant'
-    };
-    
-    const { error } = await supabase
-      .from('FARMER DASHBOARD')
-      .update(updates)
-      .eq('EntryID', entryId);
-    
-    if (error) {
-      toast({
-        title: 'Error',
-        description: 'Failed to update entry',
-        variant: 'destructive'
+    try {
+      // Find the entry to get all its data
+      const entry = pendingEntries.find(e => e.EntryID === entryId);
+      if (!entry) {
+        throw new Error('Entry not found');
+      }
+
+      const updates = {
+        VetApproved: approved ? 'Yes' : 'Rejected',
+        WithdrawalStatus: approved ? 'In Withdrawal' : 'Non-Compliant'
+      };
+      
+      // Update Supabase database
+      const { error: dbError } = await supabase
+        .from('FARMER DASHBOARD')
+        .update(updates)
+        .eq('EntryID', entryId);
+      
+      if (dbError) {
+        throw dbError;
+      }
+
+      // Prepare data for Google Sheets
+      const sheetData = {
+        EntryID: entry.EntryID,
+        FarmerName: entry.FarmerName,
+        FarmName: entry.FarmName,
+        AnimalID: entry.AnimalID,
+        AnimalType: entry.AnimalType,
+        Medicine: entry.Medicine,
+        Dosage: entry.Dosage,
+        Frequency: entry.Frequency,
+        Duration: entry.Duration,
+        Reason: entry.Reason,
+        Date: entry.Date,
+        District: entry.District,
+        VetApproved: updates.VetApproved,
+        WithdrawalStatus: updates.WithdrawalStatus,
+        VetReviewDate: new Date().toISOString().split('T')[0],
+        ReviewedBy: profile?.full_name || 'Veterinarian'
+      };
+
+      // Call the edge function to append to Google Sheets
+      const { error: sheetError } = await supabase.functions.invoke('append-to-sheets', {
+        body: {
+          sheetName: 'Veterinarian Reviews',
+          data: sheetData
+        }
       });
-    } else {
+
+      if (sheetError) {
+        console.error('Failed to update Google Sheets:', sheetError);
+        // Don't fail the whole operation if just the sheet update fails
+      }
+
       toast({
         title: 'Success',
         description: `Entry ${approved ? 'approved' : 'rejected'} successfully`,
@@ -133,9 +171,16 @@ export const KalnadaiVeterinarianDashboard: React.FC<Props> = ({ language }) => 
       });
       
       fetchPendingEntries();
+    } catch (error: any) {
+      console.error('Error updating entry:', error);
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to update entry',
+        variant: 'destructive'
+      });
+    } finally {
+      setLoading(false);
     }
-    
-    setLoading(false);
   };
 
   const getStatusBadge = (vetApproved: string) => {
