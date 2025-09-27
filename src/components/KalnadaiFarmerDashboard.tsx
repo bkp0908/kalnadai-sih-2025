@@ -7,7 +7,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { AlertTriangle, CheckCircle, Clock, Eye } from 'lucide-react';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { AlertTriangle, CheckCircle, Clock, Eye, Users, User } from 'lucide-react';
 import { FileUpload } from '@/components/FileUpload';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/components/AuthProvider';
@@ -41,8 +42,15 @@ const translations = {
     recordUsage: 'Record Usage',
     treatmentHistory: 'Treatment History',
     alertsTab: 'Alerts & Compliance',
+    treatmentMode: 'Treatment Mode',
+    individualMode: 'Individual Animal',
+    batchMode: 'Batch / Group',
+    individualDesc: 'Record treatment for a single animal with specific ID',
+    batchDesc: 'Record treatment for a group, pen, or flock of animals',
     animalType: 'Animal Type',
     animalId: 'Animal ID',
+    batchId: 'Batch / Pen / Group ID',
+    numberOfAnimals: 'Number of Animals (Optional)',
     drugName: 'Drug Name',
     dosage: 'Dosage',
     frequency: 'Frequency',
@@ -97,8 +105,15 @@ const translations = {
     recordUsage: 'பயன்பாட்டை பதிவு செய்க',
     treatmentHistory: 'சிகிச்சை வரலாறு',
     alertsTab: 'எச்சரிக்கைகள் & இணக்கம்',
+    treatmentMode: 'சிகிச்சை முறை',
+    individualMode: 'தனிப்பட்ட விலங்கு',
+    batchMode: 'குழு / கூட்டம்',
+    individualDesc: 'குறிப்பிட்ட எண்ணுடன் ஒரு விலங்குக்கு சிகிச்சை பதிவு செய்க',
+    batchDesc: 'விலங்குகளின் குழு, கொட்டகை அல்லது மந்தைக்கு சிகிச்சை பதிவு செய்க',
     animalType: 'கால்நடை வகை',
     animalId: 'கால்நடை எண்',
+    batchId: 'குழு / கொட்டகை / குழுமம் எண்',
+    numberOfAnimals: 'விலங்குகளின் எண்ணிக்கை (விருப்பம்)',
     drugName: 'மருந்தின் பெயர்',
     dosage: 'அளவு',
     frequency: 'அடிக்கடி',
@@ -155,9 +170,12 @@ interface Props {
 }
 
 export const KalnadaiFarmerDashboard: React.FC<Props> = ({ language }) => {
+  const [treatmentMode, setTreatmentMode] = useState<"individual" | "batch">("individual");
   const [formData, setFormData] = useState({
     animalType: '',
     animalId: '',
+    batchId: '',
+    numberOfAnimals: '',
     medicine: '',
     dosage: '',
     frequency: '',
@@ -244,6 +262,8 @@ export const KalnadaiFarmerDashboard: React.FC<Props> = ({ language }) => {
       setFormData({
         animalType: '',
         animalId: '',
+        batchId: '',
+        numberOfAnimals: '',
         medicine: '',
         dosage: '',
         frequency: '',
@@ -258,6 +278,21 @@ export const KalnadaiFarmerDashboard: React.FC<Props> = ({ language }) => {
     }
     
     setLoading(false);
+  };
+
+  // Set default mode based on animal type
+  const handleAnimalTypeChange = (value: string) => {
+    setFormData({...formData, animalType: value});
+    
+    // Set default modes
+    const largeAnimals = ["Cow", "Buffalo", "Goat", "Sheep"];
+    const smallAnimals = ["Hen", "Duck", "Chicken"];
+    
+    if (largeAnimals.includes(value)) {
+      setTreatmentMode("individual");
+    } else if (smallAnimals.includes(value)) {
+      setTreatmentMode("batch");
+    }
   };
 
   const getStatusBadge = (status: string, approved: string) => {
@@ -299,11 +334,35 @@ export const KalnadaiFarmerDashboard: React.FC<Props> = ({ language }) => {
               <CardDescription>{t.description}</CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Treatment Mode Selection */}
+                <div className="space-y-3">
+                  <Label>{t.treatmentMode}</Label>
+                  <ToggleGroup 
+                    type="single" 
+                    value={treatmentMode} 
+                    onValueChange={(value) => value && setTreatmentMode(value as "individual" | "batch")}
+                    className="justify-start"
+                  >
+                    <ToggleGroupItem value="individual" className="flex items-center space-x-2">
+                      <User className="h-4 w-4" />
+                      <span>{t.individualMode}</span>
+                    </ToggleGroupItem>
+                    <ToggleGroupItem value="batch" className="flex items-center space-x-2">
+                      <Users className="h-4 w-4" />
+                      <span>{t.batchMode}</span>
+                    </ToggleGroupItem>
+                  </ToggleGroup>
+                  <p className="text-sm text-muted-foreground">
+                    {treatmentMode === "individual" ? t.individualDesc : t.batchDesc}
+                  </p>
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Animal Type - Always visible */}
                   <div>
                     <Label htmlFor="animalType">{t.animalType}</Label>
-                    <Select value={formData.animalType} onValueChange={(value) => setFormData({...formData, animalType: value})}>
+                    <Select value={formData.animalType} onValueChange={handleAnimalTypeChange}>
                       <SelectTrigger>
                         <SelectValue placeholder={t.placeholder.animalType} />
                       </SelectTrigger>
@@ -314,20 +373,60 @@ export const KalnadaiFarmerDashboard: React.FC<Props> = ({ language }) => {
                         <SelectItem value="Sheep">Sheep / செம்மறியாடு</SelectItem>
                         <SelectItem value="Hen">Hen / கோழி</SelectItem>
                         <SelectItem value="Duck">Duck / வாத்து</SelectItem>
+                        <SelectItem value="Chicken">Chicken / கோழி</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
-                  
-                  <div>
-                    <Label htmlFor="animalId">{t.animalId}</Label>
-                    <Input
-                      id="animalId"
-                      value={formData.animalId}
-                      onChange={(e) => setFormData({...formData, animalId: e.target.value})}
-                      placeholder="TN-XXX-001"
-                      required
-                    />
-                  </div>
+
+                  {/* Animal ID - Only for Individual Mode */}
+                  {treatmentMode === "individual" && (
+                    <div>
+                      <Label htmlFor="animalId">{t.animalId}</Label>
+                      <Input
+                        id="animalId"
+                        value={formData.animalId}
+                        onChange={(e) => setFormData({...formData, animalId: e.target.value})}
+                        placeholder="TN-XXX-001"
+                        required={treatmentMode === "individual"}
+                      />
+                    </div>
+                  )}
+
+                  {/* Batch Selection - Only for Batch Mode */}
+                  {treatmentMode === "batch" && (
+                    <>
+                      <div>
+                        <Label htmlFor="batchId">{t.batchId}</Label>
+                        <Select value={formData.batchId} onValueChange={(value) => setFormData({...formData, batchId: value})}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select batch/pen" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="pen-1">Pen 1 / கொட்டகை 1</SelectItem>
+                            <SelectItem value="pen-2">Pen 2 / கொட்டகை 2</SelectItem>
+                            <SelectItem value="pen-3">Pen 3 / கொட்டகை 3</SelectItem>
+                            <SelectItem value="barn-a">Barn A / களஞ்சியம் A</SelectItem>
+                            <SelectItem value="barn-b">Barn B / களஞ்சியம் B</SelectItem>
+                            <SelectItem value="flock-1">Flock 1 / மந்தை 1</SelectItem>
+                            <SelectItem value="flock-2">Flock 2 / மந்தை 2</SelectItem>
+                            <SelectItem value="group-young">Young Group / இளம் குழு</SelectItem>
+                            <SelectItem value="group-adult">Adult Group / வயது குழு</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div>
+                        <Label htmlFor="numberOfAnimals">{t.numberOfAnimals}</Label>
+                        <Input
+                          id="numberOfAnimals"
+                          type="number"
+                          placeholder="e.g., 50"
+                          value={formData.numberOfAnimals}
+                          onChange={(e) => setFormData({...formData, numberOfAnimals: e.target.value})}
+                        />
+                      </div>
+                    </>
+                  )}
                   
                   <div>
                     <Label htmlFor="medicine">{t.drugName}</Label>
@@ -336,22 +435,31 @@ export const KalnadaiFarmerDashboard: React.FC<Props> = ({ language }) => {
                         <SelectValue placeholder={t.placeholder.medicine} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="Oxytetracycline">Oxytetracycline</SelectItem>
-                        <SelectItem value="Enrofloxacin">Enrofloxacin</SelectItem>
-                        <SelectItem value="Amoxicillin">Amoxicillin</SelectItem>
-                        <SelectItem value="Tylosin">Tylosin</SelectItem>
-                        <SelectItem value="Streptomycin">Streptomycin</SelectItem>
+                        <SelectItem value="Amoxicillin">Amoxicillin - அமோக்சிசில்லின் (Amoxil, Amoxycillin)</SelectItem>
+                        <SelectItem value="Oxytetracycline">Oxytetracycline - ஆக்ஸிடெட்ராசைசைலின் (Terramycin, Oxytet)</SelectItem>
+                        <SelectItem value="Enrofloxacin">Enrofloxacin - என்ரோஃப்ளாக்சாசின் (Baytril, Enrocin)</SelectItem>
+                        <SelectItem value="Tylosin">Tylosin - டைலோசின் (Tylan, Tylosin)</SelectItem>
+                        <SelectItem value="Chloramphenicol">Chloramphenicol - குளோராம்பெனிகால் (Chloromycetin)</SelectItem>
+                        <SelectItem value="Doxycycline">Doxycycline - டாக்சிசைக்கிளின் (Vibramycin)</SelectItem>
+                        <SelectItem value="Gentamicin">Gentamicin - ஜென்டாமிசின் (Gentamicin)</SelectItem>
+                        <SelectItem value="Ciprofloxacin">Ciprofloxacin - சிப்ரோஃப்ளாக்சாசின் (Cipro, Cifran)</SelectItem>
+                        <SelectItem value="Sulfachlorpyridazine">Sulfachlorpyridazine - சல்பாச்லோர்பிரிடாசின் (Vetisulid)</SelectItem>
+                        <SelectItem value="Colistin">Colistin - கொலிஸ்டின் (Coly-Mycin M)</SelectItem>
+                        <SelectItem value="Amikacin">Amikacin - அமிகாசின் (Amikacin)</SelectItem>
+                        <SelectItem value="Trimethoprim-Sulphamethoxazole">Trimethoprim-Sulphamethoxazole - டிரைமெதோபிரிம்-சல்பாமெதோக்சாசோலே (Bactrim, Septrin)</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                   
                   <div>
-                    <Label htmlFor="dosage">{t.dosage}</Label>
+                    <Label htmlFor="dosage">
+                      {t.dosage} {treatmentMode === "batch" ? "(per animal)" : ""} (mg/kg)
+                    </Label>
                     <Input
                       id="dosage"
                       value={formData.dosage}
                       onChange={(e) => setFormData({...formData, dosage: e.target.value})}
-                      placeholder="10 ml"
+                      placeholder="10 mg/kg"
                       required
                     />
                   </div>
@@ -365,6 +473,7 @@ export const KalnadaiFarmerDashboard: React.FC<Props> = ({ language }) => {
                       <SelectContent>
                         <SelectItem value="Daily">Daily / தினமும்</SelectItem>
                         <SelectItem value="Twice Daily">Twice Daily / தினம் இருமுறை</SelectItem>
+                        <SelectItem value="Three Times Daily">Three Times Daily / தினம் மூன்றுமுறை</SelectItem>
                         <SelectItem value="Weekly">Weekly / வாரம் ஒருமுறை</SelectItem>
                         <SelectItem value="As Needed">As Needed / தேவையின் போது</SelectItem>
                       </SelectContent>
@@ -390,11 +499,12 @@ export const KalnadaiFarmerDashboard: React.FC<Props> = ({ language }) => {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="Oral">Oral / வாய் வழியாக</SelectItem>
-                        <SelectItem value="Injection">Injection / ஊசி</SelectItem>
-                        <SelectItem value="Topical">Topical / மேல்பூச்சு</SelectItem>
-                        <SelectItem value="Pills">Pills / மாத்திரைகள்</SelectItem>
-                        <SelectItem value="Intravenous">Intravenous / நரம்பு வழியாக</SelectItem>
-                        <SelectItem value="Intramuscular">Intramuscular / தசை வழியாக</SelectItem>
+                        <SelectItem value="Injection-IM">Injection - Intramuscular / தசையினுள் ஊசி</SelectItem>
+                        <SelectItem value="Injection-IV">Injection - Intravenous / நரம்பினுள் ஊசி</SelectItem>
+                        <SelectItem value="Injection-SC">Injection - Subcutaneous / தோலடியில் ஊசி</SelectItem>
+                        <SelectItem value="Topical">Topical / மேற்பூச்சு</SelectItem>
+                        <SelectItem value="Feed-Mix">Mixed in Feed / உணவில் கலந்து</SelectItem>
+                        <SelectItem value="Water">In Drinking Water / குடிநீரில்</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -402,14 +512,33 @@ export const KalnadaiFarmerDashboard: React.FC<Props> = ({ language }) => {
                 
                 <div>
                   <Label htmlFor="reason">{t.reason}</Label>
-                  <Textarea
-                    id="reason"
-                    value={formData.reason}
-                    onChange={(e) => setFormData({...formData, reason: e.target.value})}
-                    placeholder={t.placeholder.reason}
-                    required
-                  />
+                  <Select value={formData.reason} onValueChange={(value) => setFormData({...formData, reason: value})}>
+                    <SelectTrigger>
+                      <SelectValue placeholder={t.placeholder.reason} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Respiratory Infection">Respiratory Infection / சுவாச தொற்று</SelectItem>
+                      <SelectItem value="Mastitis">Mastitis / மடி அழற்சி</SelectItem>
+                      <SelectItem value="Digestive Disorder">Digestive Disorder / செரிமான கோளாறு</SelectItem>
+                      <SelectItem value="Wound Infection">Wound Infection / காயத் தொற்று</SelectItem>
+                      <SelectItem value="Fever">Fever / காய்ச்சல்</SelectItem>
+                      <SelectItem value="Preventive Treatment">Preventive Treatment / தடுப்பு சிகிச்சை</SelectItem>
+                      <SelectItem value="Other">Other / மற்றவை</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
+
+                {/* Medicine calculation for batch mode */}
+                {treatmentMode === "batch" && formData.numberOfAnimals && formData.dosage && (
+                  <div className="p-4 bg-muted rounded-lg">
+                    <Label className="text-sm font-medium">Estimated Total Medicine Quantity</Label>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Approximately {parseFloat(formData.numberOfAnimals) * (parseFloat(formData.dosage.replace(/[^0-9.]/g, '')) || 0)} mg total
+                      <br />
+                      (Based on {formData.dosage} per animal × {formData.numberOfAnimals} animals)
+                    </p>
+                  </div>
+                )}
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FileUpload
